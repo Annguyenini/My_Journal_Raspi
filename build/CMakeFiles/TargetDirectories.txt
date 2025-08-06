@@ -1,8 +1,0 @@
-/home/nini/trip/build/CMakeFiles/trip.dir
-/home/nini/trip/build/CMakeFiles/edit_cache.dir
-/home/nini/trip/build/CMakeFiles/rebuild_cache.dir
-/home/nini/trip/build/CMakeFiles/list_install_components.dir
-/home/nini/trip/build/CMakeFiles/install.dir
-/home/nini/trip/build/CMakeFiles/install/local.dir
-/home/nini/trip/build/CMakeFiles/install/strip.dir
-/home/nini/trip/build/CMakeFiles/trip_autogen.dir
