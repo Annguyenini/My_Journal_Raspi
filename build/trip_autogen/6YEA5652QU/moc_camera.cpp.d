@@ -1,5 +1,6 @@
-/home/nini/trip/build/trip_autogen/EWIEGA46WW/moc_mainwindow.cpp: /home/nini/trip/mainwindow.h \
+/home/nini/trip/build/trip_autogen/6YEA5652QU/moc_camera.cpp: /home/nini/trip/include/camera.h \
   /home/nini/trip/build/trip_autogen/moc_predefs.h \
+  /home/nini/trip/include/libcam2opencv.h \
   /usr/include/aarch64-linux-gnu/bits/atomic_wide_counter.h \
   /usr/include/aarch64-linux-gnu/bits/byteswap.h \
   /usr/include/aarch64-linux-gnu/bits/confname.h \
@@ -10,12 +11,26 @@
   /usr/include/aarch64-linux-gnu/bits/errno.h \
   /usr/include/aarch64-linux-gnu/bits/floatn-common.h \
   /usr/include/aarch64-linux-gnu/bits/floatn.h \
+  /usr/include/aarch64-linux-gnu/bits/flt-eval-method.h \
+  /usr/include/aarch64-linux-gnu/bits/fp-fast.h \
+  /usr/include/aarch64-linux-gnu/bits/fp-logb.h \
   /usr/include/aarch64-linux-gnu/bits/getopt_core.h \
   /usr/include/aarch64-linux-gnu/bits/getopt_posix.h \
+  /usr/include/aarch64-linux-gnu/bits/iscanonical.h \
   /usr/include/aarch64-linux-gnu/bits/libc-header-start.h \
+  /usr/include/aarch64-linux-gnu/bits/libm-simd-decl-stubs.h \
   /usr/include/aarch64-linux-gnu/bits/local_lim.h \
   /usr/include/aarch64-linux-gnu/bits/locale.h \
   /usr/include/aarch64-linux-gnu/bits/long-double.h \
+  /usr/include/aarch64-linux-gnu/bits/math-vector.h \
+  /usr/include/aarch64-linux-gnu/bits/mathcalls-helper-functions.h \
+  /usr/include/aarch64-linux-gnu/bits/mathcalls-narrow.h \
+  /usr/include/aarch64-linux-gnu/bits/mathcalls.h \
+  /usr/include/aarch64-linux-gnu/bits/mman-linux.h \
+  /usr/include/aarch64-linux-gnu/bits/mman-map-flags-generic.h \
+  /usr/include/aarch64-linux-gnu/bits/mman-shared.h \
+  /usr/include/aarch64-linux-gnu/bits/mman.h \
+  /usr/include/aarch64-linux-gnu/bits/mman_ext.h \
   /usr/include/aarch64-linux-gnu/bits/posix1_lim.h \
   /usr/include/aarch64-linux-gnu/bits/posix2_lim.h \
   /usr/include/aarch64-linux-gnu/bits/posix_opt.h \
@@ -81,12 +96,12 @@
   /usr/include/aarch64-linux-gnu/c++/12/bits/ctype_inline.h \
   /usr/include/aarch64-linux-gnu/c++/12/bits/gthr-default.h \
   /usr/include/aarch64-linux-gnu/c++/12/bits/gthr.h \
+  /usr/include/aarch64-linux-gnu/c++/12/bits/messages_members.h \
   /usr/include/aarch64-linux-gnu/c++/12/bits/os_defines.h \
+  /usr/include/aarch64-linux-gnu/c++/12/bits/time_members.h \
   /usr/include/aarch64-linux-gnu/gnu/stubs-lp64.h \
   /usr/include/aarch64-linux-gnu/gnu/stubs.h \
   /usr/include/aarch64-linux-gnu/qt6/QtCore/QObject \
-  /usr/include/aarch64-linux-gnu/qt6/QtCore/QPoint \
-  /usr/include/aarch64-linux-gnu/qt6/QtCore/QString \
   /usr/include/aarch64-linux-gnu/qt6/QtCore/qalgorithms.h \
   /usr/include/aarch64-linux-gnu/qt6/QtCore/qanystringview.h \
   /usr/include/aarch64-linux-gnu/qt6/QtCore/qarraydata.h \
@@ -198,29 +213,21 @@
   /usr/include/aarch64-linux-gnu/qt6/QtGui/qtguiglobal.h \
   /usr/include/aarch64-linux-gnu/qt6/QtGui/qtransform.h \
   /usr/include/aarch64-linux-gnu/qt6/QtGui/qwindowdefs.h \
-  /usr/include/aarch64-linux-gnu/qt6/QtWidgets/QHBoxLayout \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/QLabel \
-  /usr/include/aarch64-linux-gnu/qt6/QtWidgets/QMainWindow \
-  /usr/include/aarch64-linux-gnu/qt6/QtWidgets/QMenu \
-  /usr/include/aarch64-linux-gnu/qt6/QtWidgets/QPushButton \
-  /usr/include/aarch64-linux-gnu/qt6/QtWidgets/QWidget \
-  /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qabstractbutton.h \
+  /usr/include/aarch64-linux-gnu/qt6/QtWidgets/QVBoxLayout \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qboxlayout.h \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qframe.h \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qlabel.h \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qlayout.h \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qlayoutitem.h \
-  /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qmainwindow.h \
-  /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qmenu.h \
-  /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qpushbutton.h \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \
-  /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qtabwidget.h \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qtwidgets-config.h \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qtwidgetsexports.h \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qtwidgetsglobal.h \
   /usr/include/aarch64-linux-gnu/qt6/QtWidgets/qwidget.h \
   /usr/include/aarch64-linux-gnu/sys/cdefs.h \
+  /usr/include/aarch64-linux-gnu/sys/mman.h \
   /usr/include/aarch64-linux-gnu/sys/select.h \
   /usr/include/aarch64-linux-gnu/sys/syscall.h \
   /usr/include/aarch64-linux-gnu/sys/types.h \
@@ -249,10 +256,12 @@
   /usr/include/c++/12/bits/c++0x_warning.h \
   /usr/include/c++/12/bits/char_traits.h \
   /usr/include/c++/12/bits/charconv.h \
+  /usr/include/c++/12/bits/codecvt.h \
   /usr/include/c++/12/bits/concept_check.h \
   /usr/include/c++/12/bits/cpp_type_traits.h \
   /usr/include/c++/12/bits/cxxabi_forced.h \
   /usr/include/c++/12/bits/cxxabi_init_exception.h \
+  /usr/include/c++/12/bits/deque.tcc \
   /usr/include/c++/12/bits/enable_special_members.h \
   /usr/include/c++/12/bits/erase_if.h \
   /usr/include/c++/12/bits/exception.h \
@@ -263,12 +272,16 @@
   /usr/include/c++/12/bits/hash_bytes.h \
   /usr/include/c++/12/bits/invoke.h \
   /usr/include/c++/12/bits/ios_base.h \
+  /usr/include/c++/12/bits/istream.tcc \
   /usr/include/c++/12/bits/iterator_concepts.h \
   /usr/include/c++/12/bits/list.tcc \
   /usr/include/c++/12/bits/locale_classes.h \
   /usr/include/c++/12/bits/locale_classes.tcc \
+  /usr/include/c++/12/bits/locale_conv.h \
   /usr/include/c++/12/bits/locale_facets.h \
   /usr/include/c++/12/bits/locale_facets.tcc \
+  /usr/include/c++/12/bits/locale_facets_nonio.h \
+  /usr/include/c++/12/bits/locale_facets_nonio.tcc \
   /usr/include/c++/12/bits/localefwd.h \
   /usr/include/c++/12/bits/max_size_type.h \
   /usr/include/c++/12/bits/memoryfwd.h \
@@ -284,6 +297,7 @@
   /usr/include/c++/12/bits/postypes.h \
   /usr/include/c++/12/bits/predefined_ops.h \
   /usr/include/c++/12/bits/ptr_traits.h \
+  /usr/include/c++/12/bits/quoted_string.h \
   /usr/include/c++/12/bits/range_access.h \
   /usr/include/c++/12/bits/ranges_algo.h \
   /usr/include/c++/12/bits/ranges_algobase.h \
@@ -296,6 +310,7 @@
   /usr/include/c++/12/bits/shared_ptr_atomic.h \
   /usr/include/c++/12/bits/shared_ptr_base.h \
   /usr/include/c++/12/bits/specfun.h \
+  /usr/include/c++/12/bits/sstream.tcc \
   /usr/include/c++/12/bits/std_abs.h \
   /usr/include/c++/12/bits/std_function.h \
   /usr/include/c++/12/bits/std_mutex.h \
@@ -303,6 +318,7 @@
   /usr/include/c++/12/bits/stl_algobase.h \
   /usr/include/c++/12/bits/stl_bvector.h \
   /usr/include/c++/12/bits/stl_construct.h \
+  /usr/include/c++/12/bits/stl_deque.h \
   /usr/include/c++/12/bits/stl_function.h \
   /usr/include/c++/12/bits/stl_heap.h \
   /usr/include/c++/12/bits/stl_iterator.h \
@@ -311,10 +327,13 @@
   /usr/include/c++/12/bits/stl_list.h \
   /usr/include/c++/12/bits/stl_map.h \
   /usr/include/c++/12/bits/stl_multimap.h \
+  /usr/include/c++/12/bits/stl_multiset.h \
   /usr/include/c++/12/bits/stl_numeric.h \
   /usr/include/c++/12/bits/stl_pair.h \
+  /usr/include/c++/12/bits/stl_queue.h \
   /usr/include/c++/12/bits/stl_raw_storage_iter.h \
   /usr/include/c++/12/bits/stl_relops.h \
+  /usr/include/c++/12/bits/stl_set.h \
   /usr/include/c++/12/bits/stl_tempbuf.h \
   /usr/include/c++/12/bits/stl_tree.h \
   /usr/include/c++/12/bits/stl_uninitialized.h \
@@ -332,20 +351,25 @@
   /usr/include/c++/12/bits/vector.tcc \
   /usr/include/c++/12/cctype \
   /usr/include/c++/12/cerrno \
+  /usr/include/c++/12/cfloat \
   /usr/include/c++/12/chrono \
   /usr/include/c++/12/climits \
   /usr/include/c++/12/clocale \
   /usr/include/c++/12/cmath \
   /usr/include/c++/12/compare \
+  /usr/include/c++/12/complex \
   /usr/include/c++/12/concepts \
   /usr/include/c++/12/cstddef \
   /usr/include/c++/12/cstdint \
+  /usr/include/c++/12/cstdio \
   /usr/include/c++/12/cstdlib \
   /usr/include/c++/12/cstring \
+  /usr/include/c++/12/ctime \
   /usr/include/c++/12/cwchar \
   /usr/include/c++/12/cwctype \
   /usr/include/c++/12/debug/assertions.h \
   /usr/include/c++/12/debug/debug.h \
+  /usr/include/c++/12/deque \
   /usr/include/c++/12/exception \
   /usr/include/c++/12/ext/aligned_buffer.h \
   /usr/include/c++/12/ext/alloc_traits.h \
@@ -356,13 +380,18 @@
   /usr/include/c++/12/ext/type_traits.h \
   /usr/include/c++/12/functional \
   /usr/include/c++/12/initializer_list \
+  /usr/include/c++/12/iomanip \
   /usr/include/c++/12/ios \
   /usr/include/c++/12/iosfwd \
+  /usr/include/c++/12/iostream \
+  /usr/include/c++/12/istream \
   /usr/include/c++/12/iterator \
   /usr/include/c++/12/limits \
   /usr/include/c++/12/list \
+  /usr/include/c++/12/locale \
   /usr/include/c++/12/map \
   /usr/include/c++/12/memory \
+  /usr/include/c++/12/mutex \
   /usr/include/c++/12/new \
   /usr/include/c++/12/numbers \
   /usr/include/c++/12/numeric \
@@ -372,10 +401,14 @@
   /usr/include/c++/12/pstl/glue_algorithm_defs.h \
   /usr/include/c++/12/pstl/glue_memory_defs.h \
   /usr/include/c++/12/pstl/glue_numeric_defs.h \
+  /usr/include/c++/12/queue \
+  /usr/include/c++/12/set \
+  /usr/include/c++/12/sstream \
   /usr/include/c++/12/stdexcept \
   /usr/include/c++/12/streambuf \
   /usr/include/c++/12/string \
   /usr/include/c++/12/string_view \
+  /usr/include/c++/12/thread \
   /usr/include/c++/12/tr1/bessel_function.tcc \
   /usr/include/c++/12/tr1/beta_function.tcc \
   /usr/include/c++/12/tr1/ell_integral.tcc \
@@ -400,10 +433,111 @@
   /usr/include/errno.h \
   /usr/include/features-time64.h \
   /usr/include/features.h \
+  /usr/include/libintl.h \
   /usr/include/limits.h \
   /usr/include/linux/errno.h \
   /usr/include/linux/limits.h \
   /usr/include/locale.h \
+  /usr/include/math.h \
+  /usr/include/opencv4/opencv2/calib3d.hpp \
+  /usr/include/opencv4/opencv2/core.hpp \
+  /usr/include/opencv4/opencv2/core/affine.hpp \
+  /usr/include/opencv4/opencv2/core/async.hpp \
+  /usr/include/opencv4/opencv2/core/base.hpp \
+  /usr/include/opencv4/opencv2/core/bufferpool.hpp \
+  /usr/include/opencv4/opencv2/core/check.hpp \
+  /usr/include/opencv4/opencv2/core/cuda.hpp \
+  /usr/include/opencv4/opencv2/core/cuda.inl.hpp \
+  /usr/include/opencv4/opencv2/core/cuda_types.hpp \
+  /usr/include/opencv4/opencv2/core/cv_cpu_dispatch.h \
+  /usr/include/opencv4/opencv2/core/cvdef.h \
+  /usr/include/opencv4/opencv2/core/cvstd.hpp \
+  /usr/include/opencv4/opencv2/core/cvstd.inl.hpp \
+  /usr/include/opencv4/opencv2/core/cvstd_wrapper.hpp \
+  /usr/include/opencv4/opencv2/core/fast_math.hpp \
+  /usr/include/opencv4/opencv2/core/hal/interface.h \
+  /usr/include/opencv4/opencv2/core/mat.hpp \
+  /usr/include/opencv4/opencv2/core/mat.inl.hpp \
+  /usr/include/opencv4/opencv2/core/matx.hpp \
+  /usr/include/opencv4/opencv2/core/neon_utils.hpp \
+  /usr/include/opencv4/opencv2/core/operations.hpp \
+  /usr/include/opencv4/opencv2/core/optim.hpp \
+  /usr/include/opencv4/opencv2/core/ovx.hpp \
+  /usr/include/opencv4/opencv2/core/persistence.hpp \
+  /usr/include/opencv4/opencv2/core/saturate.hpp \
+  /usr/include/opencv4/opencv2/core/traits.hpp \
+  /usr/include/opencv4/opencv2/core/types.hpp \
+  /usr/include/opencv4/opencv2/core/utility.hpp \
+  /usr/include/opencv4/opencv2/core/version.hpp \
+  /usr/include/opencv4/opencv2/core/vsx_utils.hpp \
+  /usr/include/opencv4/opencv2/dnn.hpp \
+  /usr/include/opencv4/opencv2/dnn/dict.hpp \
+  /usr/include/opencv4/opencv2/dnn/dnn.hpp \
+  /usr/include/opencv4/opencv2/dnn/dnn.inl.hpp \
+  /usr/include/opencv4/opencv2/dnn/layer.hpp \
+  /usr/include/opencv4/opencv2/dnn/utils/inference_engine.hpp \
+  /usr/include/opencv4/opencv2/dnn/version.hpp \
+  /usr/include/opencv4/opencv2/features2d.hpp \
+  /usr/include/opencv4/opencv2/flann.hpp \
+  /usr/include/opencv4/opencv2/flann/all_indices.h \
+  /usr/include/opencv4/opencv2/flann/allocator.h \
+  /usr/include/opencv4/opencv2/flann/any.h \
+  /usr/include/opencv4/opencv2/flann/autotuned_index.h \
+  /usr/include/opencv4/opencv2/flann/composite_index.h \
+  /usr/include/opencv4/opencv2/flann/config.h \
+  /usr/include/opencv4/opencv2/flann/defines.h \
+  /usr/include/opencv4/opencv2/flann/dist.h \
+  /usr/include/opencv4/opencv2/flann/dynamic_bitset.h \
+  /usr/include/opencv4/opencv2/flann/flann_base.hpp \
+  /usr/include/opencv4/opencv2/flann/general.h \
+  /usr/include/opencv4/opencv2/flann/ground_truth.h \
+  /usr/include/opencv4/opencv2/flann/heap.h \
+  /usr/include/opencv4/opencv2/flann/hierarchical_clustering_index.h \
+  /usr/include/opencv4/opencv2/flann/index_testing.h \
+  /usr/include/opencv4/opencv2/flann/kdtree_index.h \
+  /usr/include/opencv4/opencv2/flann/kdtree_single_index.h \
+  /usr/include/opencv4/opencv2/flann/kmeans_index.h \
+  /usr/include/opencv4/opencv2/flann/linear_index.h \
+  /usr/include/opencv4/opencv2/flann/logger.h \
+  /usr/include/opencv4/opencv2/flann/lsh_index.h \
+  /usr/include/opencv4/opencv2/flann/lsh_table.h \
+  /usr/include/opencv4/opencv2/flann/matrix.h \
+  /usr/include/opencv4/opencv2/flann/miniflann.hpp \
+  /usr/include/opencv4/opencv2/flann/nn_index.h \
+  /usr/include/opencv4/opencv2/flann/params.h \
+  /usr/include/opencv4/opencv2/flann/random.h \
+  /usr/include/opencv4/opencv2/flann/result_set.h \
+  /usr/include/opencv4/opencv2/flann/sampling.h \
+  /usr/include/opencv4/opencv2/flann/saving.h \
+  /usr/include/opencv4/opencv2/flann/timer.h \
+  /usr/include/opencv4/opencv2/highgui.hpp \
+  /usr/include/opencv4/opencv2/imgcodecs.hpp \
+  /usr/include/opencv4/opencv2/imgproc.hpp \
+  /usr/include/opencv4/opencv2/imgproc/segmentation.hpp \
+  /usr/include/opencv4/opencv2/ml.hpp \
+  /usr/include/opencv4/opencv2/ml/ml.inl.hpp \
+  /usr/include/opencv4/opencv2/objdetect.hpp \
+  /usr/include/opencv4/opencv2/objdetect/detection_based_tracker.hpp \
+  /usr/include/opencv4/opencv2/objdetect/face.hpp \
+  /usr/include/opencv4/opencv2/opencv.hpp \
+  /usr/include/opencv4/opencv2/opencv_modules.hpp \
+  /usr/include/opencv4/opencv2/photo.hpp \
+  /usr/include/opencv4/opencv2/stitching.hpp \
+  /usr/include/opencv4/opencv2/stitching/detail/blenders.hpp \
+  /usr/include/opencv4/opencv2/stitching/detail/camera.hpp \
+  /usr/include/opencv4/opencv2/stitching/detail/exposure_compensate.hpp \
+  /usr/include/opencv4/opencv2/stitching/detail/matchers.hpp \
+  /usr/include/opencv4/opencv2/stitching/detail/motion_estimators.hpp \
+  /usr/include/opencv4/opencv2/stitching/detail/seam_finders.hpp \
+  /usr/include/opencv4/opencv2/stitching/detail/util.hpp \
+  /usr/include/opencv4/opencv2/stitching/detail/util_inl.hpp \
+  /usr/include/opencv4/opencv2/stitching/detail/warpers.hpp \
+  /usr/include/opencv4/opencv2/stitching/detail/warpers_inl.hpp \
+  /usr/include/opencv4/opencv2/stitching/warpers.hpp \
+  /usr/include/opencv4/opencv2/video.hpp \
+  /usr/include/opencv4/opencv2/video/background_segm.hpp \
+  /usr/include/opencv4/opencv2/video/tracking.hpp \
+  /usr/include/opencv4/opencv2/videoio.hpp \
   /usr/include/pthread.h \
   /usr/include/sched.h \
   /usr/include/stdc-predef.h \
@@ -417,9 +551,40 @@
   /usr/include/unistd.h \
   /usr/include/wchar.h \
   /usr/include/wctype.h \
+  /usr/lib/gcc/aarch64-linux-gnu/12/include/arm_bf16.h \
+  /usr/lib/gcc/aarch64-linux-gnu/12/include/arm_fp16.h \
+  /usr/lib/gcc/aarch64-linux-gnu/12/include/arm_neon.h \
+  /usr/lib/gcc/aarch64-linux-gnu/12/include/float.h \
   /usr/lib/gcc/aarch64-linux-gnu/12/include/stdarg.h \
   /usr/lib/gcc/aarch64-linux-gnu/12/include/stdbool.h \
   /usr/lib/gcc/aarch64-linux-gnu/12/include/stddef.h \
   /usr/lib/linux/uapi/arm64/asm/errno.h \
   /usr/lib/linux/uapi/arm64/asm/unistd.h \
-  /usr/lib/linux/uapi/arm64/asm/unistd_64.h
+  /usr/lib/linux/uapi/arm64/asm/unistd_64.h \
+  /usr/local/include/libcamera/libcamera/base/bound_method.h \
+  /usr/local/include/libcamera/libcamera/base/class.h \
+  /usr/local/include/libcamera/libcamera/base/flags.h \
+  /usr/local/include/libcamera/libcamera/base/object.h \
+  /usr/local/include/libcamera/libcamera/base/shared_fd.h \
+  /usr/local/include/libcamera/libcamera/base/signal.h \
+  /usr/local/include/libcamera/libcamera/base/span.h \
+  /usr/local/include/libcamera/libcamera/base/unique_fd.h \
+  /usr/local/include/libcamera/libcamera/camera.h \
+  /usr/local/include/libcamera/libcamera/camera_manager.h \
+  /usr/local/include/libcamera/libcamera/color_space.h \
+  /usr/local/include/libcamera/libcamera/control_ids.h \
+  /usr/local/include/libcamera/libcamera/controls.h \
+  /usr/local/include/libcamera/libcamera/fence.h \
+  /usr/local/include/libcamera/libcamera/formats.h \
+  /usr/local/include/libcamera/libcamera/framebuffer.h \
+  /usr/local/include/libcamera/libcamera/framebuffer_allocator.h \
+  /usr/local/include/libcamera/libcamera/geometry.h \
+  /usr/local/include/libcamera/libcamera/libcamera.h \
+  /usr/local/include/libcamera/libcamera/logging.h \
+  /usr/local/include/libcamera/libcamera/orientation.h \
+  /usr/local/include/libcamera/libcamera/pixel_format.h \
+  /usr/local/include/libcamera/libcamera/property_ids.h \
+  /usr/local/include/libcamera/libcamera/request.h \
+  /usr/local/include/libcamera/libcamera/stream.h \
+  /usr/local/include/libcamera/libcamera/transform.h \
+  /usr/local/include/libcamera/libcamera/version.h

@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/nini/trip/camera.cpp" "CMakeFiles/trip.dir/camera.cpp.o" "gcc" "CMakeFiles/trip.dir/camera.cpp.o.d"
   "/home/nini/trip/main.cpp" "CMakeFiles/trip.dir/main.cpp.o" "gcc" "CMakeFiles/trip.dir/main.cpp.o.d"
   "/home/nini/trip/mainwindow.cpp" "CMakeFiles/trip.dir/mainwindow.cpp.o" "gcc" "CMakeFiles/trip.dir/mainwindow.cpp.o.d"
   "/home/nini/trip/build/trip_autogen/mocs_compilation.cpp" "CMakeFiles/trip.dir/trip_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/trip.dir/trip_autogen/mocs_compilation.cpp.o.d"

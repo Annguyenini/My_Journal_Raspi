@@ -273,6 +273,9 @@ OPENGL_opengl_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libOpenGL.so
 //Path to a file.
 OPENGL_xmesa_INCLUDE_DIR:PATH=OPENGL_xmesa_INCLUDE_DIR-NOTFOUND
 
+//The directory containing a CMake configuration file for OpenCV.
+OpenCV_DIR:PATH=/usr/lib/aarch64-linux-gnu/cmake/opencv4
+
 //Arguments to supply to pkg-config
 PKG_CONFIG_ARGN:STRING=
 
@@ -333,6 +336,12 @@ XKB_INCLUDE_DIR:PATH=/usr/include
 
 //Path to a library.
 XKB_LIBRARY:FILEPATH=/usr/lib/aarch64-linux-gnu/libxkbcommon.so
+
+//Path to a library.
+pkgcfg_lib_LIBCAMERA_camera:FILEPATH=/usr/local/lib/aarch64-linux-gnu/libcamera.so
+
+//Path to a library.
+pkgcfg_lib_LIBCAMERA_camera-base:FILEPATH=/usr/local/lib/aarch64-linux-gnu/libcamera-base.so
 
 //Path to a library.
 pkgcfg_lib_PKG_XKB_xkbcommon:FILEPATH=/usr/lib/aarch64-linux-gnu/libxkbcommon.so
@@ -512,8 +521,12 @@ CMAKE_STRIP-ADVANCED:INTERNAL=1
 CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding OpenCV
+FIND_PACKAGE_MESSAGE_DETAILS_OpenCV:INTERNAL=[/usr][v4.6.0()]
 //Details about finding OpenGL
 FIND_PACKAGE_MESSAGE_DETAILS_OpenGL:INTERNAL=[/usr/lib/aarch64-linux-gnu/libOpenGL.so][/usr/lib/aarch64-linux-gnu/libGLX.so][/usr/include][c ][v()]
+//Details about finding PkgConfig
+FIND_PACKAGE_MESSAGE_DETAILS_PkgConfig:INTERNAL=[/usr/bin/pkg-config][v1.8.1()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //Details about finding WrapAtomic
@@ -526,6 +539,41 @@ FIND_PACKAGE_MESSAGE_DETAILS_WrapVulkanHeaders:INTERNAL=[/usr/include][v()]
 FIND_PACKAGE_MESSAGE_DETAILS_XKB:INTERNAL=[/usr/lib/aarch64-linux-gnu/libxkbcommon.so][/usr/include][v1.5.0(0.5.0)]
 //Test HAVE_STDATOMIC
 HAVE_STDATOMIC:INTERNAL=1
+LIBCAMERA_CFLAGS:INTERNAL=-I/usr/local/include/libcamera
+LIBCAMERA_CFLAGS_I:INTERNAL=
+LIBCAMERA_CFLAGS_OTHER:INTERNAL=
+LIBCAMERA_FOUND:INTERNAL=1
+LIBCAMERA_INCLUDEDIR:INTERNAL=/usr/local/include
+LIBCAMERA_INCLUDE_DIRS:INTERNAL=/usr/local/include/libcamera
+LIBCAMERA_LDFLAGS:INTERNAL=-L/usr/local/lib/aarch64-linux-gnu;-lcamera;-lcamera-base
+LIBCAMERA_LDFLAGS_OTHER:INTERNAL=
+LIBCAMERA_LIBDIR:INTERNAL=/usr/local/lib/aarch64-linux-gnu
+LIBCAMERA_LIBRARIES:INTERNAL=camera;camera-base
+LIBCAMERA_LIBRARY_DIRS:INTERNAL=/usr/local/lib/aarch64-linux-gnu
+LIBCAMERA_LIBS:INTERNAL=
+LIBCAMERA_LIBS_L:INTERNAL=
+LIBCAMERA_LIBS_OTHER:INTERNAL=
+LIBCAMERA_LIBS_PATHS:INTERNAL=
+LIBCAMERA_MODULE_NAME:INTERNAL=libcamera
+LIBCAMERA_PREFIX:INTERNAL=/usr/local
+LIBCAMERA_STATIC_CFLAGS:INTERNAL=-I/usr/local/include/libcamera
+LIBCAMERA_STATIC_CFLAGS_I:INTERNAL=
+LIBCAMERA_STATIC_CFLAGS_OTHER:INTERNAL=
+LIBCAMERA_STATIC_INCLUDE_DIRS:INTERNAL=/usr/local/include/libcamera
+LIBCAMERA_STATIC_LDFLAGS:INTERNAL=-L/usr/local/lib/aarch64-linux-gnu;-lcamera;-lcamera-base
+LIBCAMERA_STATIC_LDFLAGS_OTHER:INTERNAL=
+LIBCAMERA_STATIC_LIBDIR:INTERNAL=
+LIBCAMERA_STATIC_LIBRARIES:INTERNAL=camera;camera-base
+LIBCAMERA_STATIC_LIBRARY_DIRS:INTERNAL=/usr/local/lib/aarch64-linux-gnu
+LIBCAMERA_STATIC_LIBS:INTERNAL=
+LIBCAMERA_STATIC_LIBS_L:INTERNAL=
+LIBCAMERA_STATIC_LIBS_OTHER:INTERNAL=
+LIBCAMERA_STATIC_LIBS_PATHS:INTERNAL=
+LIBCAMERA_VERSION:INTERNAL=0.5.1
+LIBCAMERA_libcamera_INCLUDEDIR:INTERNAL=
+LIBCAMERA_libcamera_LIBDIR:INTERNAL=
+LIBCAMERA_libcamera_PREFIX:INTERNAL=
+LIBCAMERA_libcamera_VERSION:INTERNAL=
 //ADVANCED property for variable: OPENGL_EGL_INCLUDE_DIR
 OPENGL_EGL_INCLUDE_DIR-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OPENGL_GLX_INCLUDE_DIR
@@ -1303,9 +1351,15 @@ Vulkan_LIBRARY-ADVANCED:INTERNAL=1
 _CMAKE_LINKER_PUSHPOP_STATE_SUPPORTED:INTERNAL=TRUE
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=/usr/local
+__pkg_config_arguments_LIBCAMERA:INTERNAL=REQUIRED;IMPORTED_TARGET;libcamera
 __pkg_config_arguments_PKG_XKB:INTERNAL=QUIET;xkbcommon
+__pkg_config_checked_LIBCAMERA:INTERNAL=1
 __pkg_config_checked_PKG_XKB:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_LIBCAMERA_camera
+pkgcfg_lib_LIBCAMERA_camera-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: pkgcfg_lib_LIBCAMERA_camera-base
+pkgcfg_lib_LIBCAMERA_camera-base-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: pkgcfg_lib_PKG_XKB_xkbcommon
 pkgcfg_lib_PKG_XKB_xkbcommon-ADVANCED:INTERNAL=1
-prefix_result:INTERNAL=/usr/lib/aarch64-linux-gnu
+prefix_result:INTERNAL=/usr/local/lib/aarch64-linux-gnu
 

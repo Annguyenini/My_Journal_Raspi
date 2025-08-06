@@ -1,13 +1,13 @@
-#include "mainwindow.h"
-
+#include "include/mainwindow.h"
+#include "include/camera.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
     StatusBar s;
-    w.show();
+    
     s.SetUpStatusBar();
+   
     return a.exec();
 }

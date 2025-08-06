@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NO_DEBUG -DQT_WIDGETS_LIB
 
-CXX_INCLUDES = -I/home/nini/trip/build/trip_autogen/include -isystem /usr/include/aarch64-linux-gnu/qt6/QtCore -isystem /usr/include/aarch64-linux-gnu/qt6 -isystem /usr/lib/aarch64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/aarch64-linux-gnu/qt6/QtWidgets -isystem /usr/include/aarch64-linux-gnu/qt6/QtGui
+CXX_INCLUDES = -I/home/nini/trip/build/trip_autogen/include -I/home/nini/trip/include -I/usr/include/opencv4/opencv2 -isystem /usr/include/aarch64-linux-gnu/qt6/QtCore -isystem /usr/include/aarch64-linux-gnu/qt6 -isystem /usr/lib/aarch64-linux-gnu/qt6/mkspecs/linux-g++ -isystem /usr/include/aarch64-linux-gnu/qt6/QtWidgets -isystem /usr/include/aarch64-linux-gnu/qt6/QtGui -isystem /usr/include/opencv4 -isystem /usr/local/include/libcamera
 
 CXX_FLAGS = -std=gnu++17
 

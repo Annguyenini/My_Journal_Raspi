@@ -2,6 +2,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/trip_autogen.dir/AutogenUsed.txt"
   "CMakeFiles/trip_autogen.dir/ParseCache.txt"
   "trip_autogen"
+  "CMakeFiles/trip.dir/camera.cpp.o"
+  "CMakeFiles/trip.dir/camera.cpp.o.d"
   "CMakeFiles/trip.dir/main.cpp.o"
   "CMakeFiles/trip.dir/main.cpp.o.d"
   "CMakeFiles/trip.dir/mainwindow.cpp.o"

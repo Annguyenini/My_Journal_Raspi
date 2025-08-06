@@ -82,12 +82,12 @@ clean: CMakeFiles/trip_autogen.dir/clean
 CMakeFiles/trip.dir/all: CMakeFiles/trip_autogen.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/trip.dir/build.make CMakeFiles/trip.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/trip.dir/build.make CMakeFiles/trip.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/nini/trip/build/CMakeFiles --progress-num=1,2,3,4 "Built target trip"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/nini/trip/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target trip"
 .PHONY : CMakeFiles/trip.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/trip.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/nini/trip/build/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/nini/trip/build/CMakeFiles 6
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/trip.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/nini/trip/build/CMakeFiles 0
 .PHONY : CMakeFiles/trip.dir/rule
@@ -108,7 +108,7 @@ CMakeFiles/trip.dir/clean:
 CMakeFiles/trip_autogen.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/trip_autogen.dir/build.make CMakeFiles/trip_autogen.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/trip_autogen.dir/build.make CMakeFiles/trip_autogen.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/nini/trip/build/CMakeFiles --progress-num=5 "Built target trip_autogen"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/nini/trip/build/CMakeFiles --progress-num=6 "Built target trip_autogen"
 .PHONY : CMakeFiles/trip_autogen.dir/all
 
 # Build rule for subdir invocation for target.

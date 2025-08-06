@@ -10,13 +10,23 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(OpenCV REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LIBCAMERA REQUIRED IMPORTED_TARGET libcamera)
+
 
 set(PROJECT_SOURCES
         main.cpp
         mainwindow.cpp
-        mainwindow.h
+        camera.cpp
         mainwindow.ui
+        include/mainwindow.h
+        include/camera.h
+
 )
+include_directories(${CMAKE_SOURCE_DIR}/include)  # where libcam2opencv.h lives
+include_directories(/usr/include/opencv4/opencv2) 
+include_directories(/usr/local/include)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(trip
@@ -47,7 +57,9 @@ else()
     endif()
 endif()
 
-target_link_libraries(trip PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(trip PRIVATE Qt${QT_VERSION_MAJOR}::Widgets ${OpenCV_LIBS}
+    ${CMAKE_SOURCE_DIR}/lib/libcam2opencv.a PkgConfig::LIBCAMERA
+)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

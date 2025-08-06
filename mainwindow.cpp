@@ -1,4 +1,5 @@
-#include "mainwindow.h"
+#include "include/mainwindow.h"
+#include "include/camera.h"
 #include "./ui_mainwindow.h"
 #include <QPushButton>
 #include <QMenu>
@@ -22,6 +23,9 @@ MainWindow::MainWindow(QWidget *parent)
     _mainlayout->setContentsMargins(0,0,0,0);
     _mainlayout->setSpacing(0);
     _central_widget->setLayout(_mainlayout);
+    Camera* camera = new Camera(_mainlayout);
+    camera->StartCamera();
+    show();
 }
 void StatusBar::option_menu(){
     _optionMenu = new QMenu(this);
