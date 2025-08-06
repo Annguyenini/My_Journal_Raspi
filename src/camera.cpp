@@ -42,7 +42,7 @@ void Camera::StartCamera() {
     Libcam2OpenCVSettings setting;
     setting.width = 1920;          // Full HD width
     setting.height = 1080;         // Full HD height
-    setting.framerate = 25;        // Lock it to 30 FPS for smoothness
+    setting.framerate = 20;        // Lock it to 30 FPS for smoothness
     // setting.brightness = 0.5f;     // Medium brightness (adjust if needed)
     // // setting.contrast = 1.0f;       // Normal contrast
     // // setting.exposureTime = 10000;  // Lock exposure time (in microseconds), try 10ms as a start
