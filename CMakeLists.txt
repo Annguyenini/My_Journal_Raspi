@@ -13,6 +13,9 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(OpenCV REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(Boost REQUIRED)
+find_package(SQLite3 REQUIRED)
+target_include_directories(trip PRIVATE ${SQLite3_INCLUDE_DIRS})
+target_link_libraries(trip PRIVATE ${SQLite3_LIBRARIES})
 pkg_check_modules(LIBCAMERA REQUIRED IMPORTED_TARGET libcamera)
 
 
@@ -28,6 +31,7 @@ set(PROJECT_SOURCES
 include_directories(${CMAKE_SOURCE_DIR}/include)  # where libcam2opencv.h lives
 include_directories(/usr/include/opencv4/opencv2) 
 include_directories(/usr/local/include)
+include_directories(/usr/include)
 target_include_directories(trip PRIVATE /usr/include/boost)
 
 
