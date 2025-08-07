@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void mainWindow::timer(){
     Qtimer * timer = new Qtimer(this);
-    connect(timer)
+    connect(timer, &Qtimer::timeout, this, Location::)
 }
 MainWindow::~MainWindow()
 {
