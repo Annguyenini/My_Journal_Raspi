@@ -41,7 +41,7 @@ private:
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    
 };
 class StatusBar : public MainWindow{
 public:

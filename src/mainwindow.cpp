@@ -27,9 +27,9 @@ MainWindow::MainWindow(QWidget *parent)
     _central_widget->setLayout(_mainlayout);
     // Camera* camera = new Camera(_mainlayout);
     // camera->StartCamera();
-    GPS gps;
-    gps.startThread();
-    show();
+    GPS* gps =new GPS(_mainlayout);
+    // gps.startThread();
+    // show();
 }
 
 // void MainWindow::timer(){

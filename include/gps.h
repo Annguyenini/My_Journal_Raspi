@@ -1,13 +1,24 @@
 #include <QSerialPort>
 #include <QObject>
-
+#include <QApplication>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QThread>
+#include <QSettings>
 #include <QSerialPortInfo>
 #include <filesystem>
 #include <QSettings>
 #include <sqlite3.h>
 #include <mutex>
 #include <unordered_map>
-class GPS: public QObject{
+#include <vector>
+#include <utility>
+#include <boost/geometry.hpp>
+#include <boost/geometry/geometries/point.hpp>
+#include <boost/geometry/geometries/polygon.hpp>
+using Point = boost::geometry::model::point<double, 2, boost::geometry::cs::cartesian>;
+using Polygon = boost::geometry::model::polygon<Point>;
+class GPSWorker: public QObject{
     Q_OBJECT
 
     private:
@@ -18,7 +29,7 @@ class GPS: public QObject{
         std::filesystem::path _geoPolygonPath;
         std::string _currentCity;
         std::string _currentRealnamecity;
-        QSerialPort* _serial;
+        QSerialPort* _serial = nullptr;
         sqlite3* _db;
         float _speed=0;
         float _lat =0;
@@ -31,25 +42,46 @@ class GPS: public QObject{
         static std::unordered_map<std::string, _gpsMetadataStruct> _cache;
         static std::mutex cacheMutex;
         bool initPath();
+        struct cityNames{
+            std::string nameId;
+            std::string realName;
+        };
+        bool _isGeoLoaded = false;
+        std::vector<std::pair<cityNames,Polygon>> _geoCache;
     public:
-        GPS();
-        ~GPS();
-        
+        GPSWorker();
+        ~GPSWorker();
+        void initialPort();
         void startReadingFromGps();
         void setUpDB();
         std::string getCurrentTime();
         std::string getCurrentCity(double lat, double lng);
-        void speedMonitor();
+        // void speedMonitor();
         
         void addingToCache(std::string time, const _gpsMetadataStruct & data);
         void startThread();
+        Q_SIGNAL void coordinatesUpdate(const float& lat, const float& lng);
+        Q_SIGNAL void cityChanged(std::string nameId, std::string realName);
+
+        void loadGeoToCache();
+        
 };
-class GPSWoker:public QObject{
+class GPS: public QObject{
     Q_OBJECT
+    private:
+        QLabel* _cityLabel;
+        QLabel* _coordinatesLabel; 
+        QVBoxLayout* _mainlayout;
+        QThread* _workerThread;
+        GPSWorker* _worker;
+
     public:
-        Q_SIGNAL void coordinatesUpdate();
-        Q_SIGNAL void cityChanged();
-        void startReadingFromGps();
-        void speedMonitor();
+    GPS(QVBoxLayout* mainlayout);
+    ~GPS();
+    void handleCityUpdate(const std::string &nameId, const std::string &realName);
+    void handleCoordinatesUpdate(float lat, float lng);
+    void stop();
+    // Q_SIGNAL void stopWorker();
+
     
-}
+};

@@ -24,6 +24,7 @@ set(PROJECT_SOURCES
         src/camera.cpp
         src/mainwindow.ui
         src/gps.cpp
+        src/gpsworker.cpp
         src/statusbar.cpp
         include/mainwindow.h
         include/camera.h
