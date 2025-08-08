@@ -1,5 +1,5 @@
-#include "include/mainwindow.h"
-#include "include/camera.h"
+#include "mainwindow.h"
+#include "camera.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])

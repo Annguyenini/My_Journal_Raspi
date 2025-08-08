@@ -1,4 +1,12 @@
-
+#include "mainwindow.h"
+#include "./ui_mainwindow.h"
+#include <QPushButton>
+#include <QMenu>
+#include <QHBoxLayout>  // if you use layouts
+#include <QLabel>
+#include <QPoint>       // for QPoint stuff
+#include <QWidget>      // base widget stuff
+#include <QObject>  
 
 void StatusBar::option_menu(){
     _optionMenu = new QMenu(this);

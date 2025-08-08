@@ -1,32 +1,58 @@
-#include "include/gps.h"
+#include "gps.h"
+#include <iostream>
+#include <thread>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QObject>
+
 #include <fstream>
 #include <filesystem>
 #include <sqlite3.h>
 #include <ctime>
-#include "include/json.hpp"
+#include "json.hpp"
+#include <boost/geometry.hpp>
+#include <boost/geometry/geometries/point.hpp>
+#include <boost/geometry/geometries/polygon.hpp>
+using Point = boost::geometry::model::point<double, 2, boost::geometry::cs::cartesian>;
 
+// Define your polygon type
+using Polygon = boost::geometry::model::polygon<Point>;
 using json = nlohmann::json;
 namespace bg = boost::geometry;
+std::unordered_map<std::string, GPS::_gpsMetadataStruct> GPS::_cache;
+std::mutex GPS::cacheMutex;
 GPS::GPS(){
-    _serial =new QserialPort(this);
+    _parentDir = std::filesystem::current_path().parent_path();
+    _settings = new QSettings(QString::fromStdString((_parentDir / "Configure.ini").string()), QSettings::IniFormat);
+    _databaseDir = _parentDir / _settings->value("Database/path").toString().toStdString();
+    _dbPath = _parentDir /_settings->value("Database/gpsPath").toString().toStdString();
+    _geoPolygonPath = _parentDir / _settings->value("Database/geoPolygonPath").toString().toStdString();
+    qDebug() << QString::fromStdString(_databaseDir.string());
+    qDebug() << QString::fromStdString(_dbPath.string());
+    qDebug() << QString::fromStdString(_geoPolygonPath.string());
+
+    _serial =new QSerialPort();
+    _serial->moveToThread(QApplication::instance()->thread());
     try{
         _serial->setPortName("/dev/serial0");
-        _serial->setBauRate(QSerialPort::Baud9600);
+        _serial->setBaudRate(QSerialPort::Baud9600);
         
 
     }
     catch(const std::exception &e ){
         qDebug()<<"Serial error:"<<e.what();
     }
-    if initPath();
+    if (!GPS::initPath()){
+        qDebug()<<"Error initial paths!";
+        return;
+    };
+    GPS::setUpDB();
 }
-bool GPS:initPath(){
-    if (!filesystem::exist(_databaseDir)){
+bool GPS::initPath(){
+    if (!std::filesystem::exists(_databaseDir.string())){
         try{
-        qDebug()<<"Path doesnt exist..\n Attempting to create...\n";
-        if(!filesystem::create_directories(_databaseDir)){
+        qDebug()<<"Path doesnt exist..\n Attempt to create...\n";
+        if(!std::filesystem::create_directories(_databaseDir)){
             throw std::runtime_error("Fail to create database folder.\n");
         }
        }
@@ -36,16 +62,16 @@ bool GPS:initPath(){
        }
 
     }
-    if(!filesystem::exist(_dbPath)){
+    if(!std::filesystem::exists(_dbPath.string())){
         try{
-            qDebug()<<"Db path does exist..\nAttrmpting to create...\n";
-            std::ofstream db (_dbPath)
+            qDebug()<<"Db path doesn't exist..\nAttempt to create...\n";
+            std::ofstream db (_dbPath.string());
             if(!db){
                 throw std::runtime_error("Fail to create gps db file.'n");
             }
             
-            qDebug()<<"Done creating>>"
-            db.close()
+            qDebug()<<"Done creating>>";
+            db.close();
             
         }
         catch(const std::exception &e){
@@ -53,7 +79,7 @@ bool GPS:initPath(){
             return false;
         }
     }
-    if(!filesystem::exist(_geoPolygonPath)){
+    if(!std::filesystem::exists(_geoPolygonPath)){
         qDebug()<<"Geo file not found\n";
         return false;
     }
@@ -61,18 +87,18 @@ bool GPS:initPath(){
 
 }
 
-void setUpDB(){
+void GPS::setUpDB(){
     try{
-        int rc = sqlite3_open(_dbPath,&_db);
+        int rc = sqlite3_open(_dbPath.string().c_str(),&_db);
         char* errMsg = nullptr;
         if (rc) {
-        std::cerr << "Can't open database: " << sqlite3_errmsg(db) << std::endl;
-        return 1;
+        std::cerr << "Can't open database: " << sqlite3_errmsg(_db) << std::endl;
+        return;
         }
         const char* createTableSQL="CREATE TABLE IF NOT EXISTS log (time TEXT, city TEXT, lat REAL, lng REAL )";
         rc = sqlite3_exec(_db, createTableSQL,nullptr,nullptr,&errMsg);
         if(rc != SQLITE_OK){
-            qDebug()<<"SQL error (INSERT): "<<errMsg<<std::endl;
+            qDebug()<<"SQL error (INSERT): "<<errMsg;
             sqlite3_free(errMsg);
         }
     }
@@ -91,14 +117,14 @@ std::string GPS::getCurrentTime(){
     return oss.str();
 }
 
-void addingToCache(std::string &time, const gpsMetadata & data){
+void GPS::addingToCache(std::string time, const _gpsMetadataStruct & data){
     std::lock_guard<std::mutex> lock(cacheMutex);
     _cache[time] = data;
     if(_cache.size()>=10){
         sqlite3_exec(_db, "BEGIN TRANSACTION;", nullptr, nullptr, nullptr);
         const char* sql ="INSERT INTO LOG (time,city, lat, lng) VALUES(?,?,?,?) ";
         sqlite3_stmt* stmt;
-        if (sqlite3_prepare_v2(_db, sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+        if (sqlite3_prepare_v2(_db, sql, -1, &stmt, nullptr) != SQLITE_OK) {
             std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(_db) << "\n";
             return;
         }
@@ -139,45 +165,48 @@ void GPS::startReadingFromGps(){
         QByteArray data = _serial->readAll();
         QString line = QString::fromUtf8(data);
         QStringList parts =line.split(',');
-        switch(parts[0]){
-            case "$GPRMC":
-                float lat= parts[3].toFloat();
-                float lng= parts[5].toFloat();
+        if (parts[0]=="$GPRMC" && parts.size()>5){
+                _lat= parts[3].toFloat();
+                _lng= parts[5].toFloat();
                 _gpsMetadataStruct data {
                     _currentCity,
-                    lat.toFloat(),
-                    lng.toFloat()
+                    _lat,
+                    _lng
                 };
                 this -> addingToCache(this->getCurrentTime(),data);
-                break;
-            case "$GPVTG":
-                _speed=parts[7].toFloat();
-                break;
-            default:
-                qDebug()<<"Fail to read data or there is no good data!"
+            }
+                
+        else if (parts[0]=="$GPVTG"){
+
+            _speed=parts[7].toFloat();
         }
+        else{
+            qDebug()<<"Fail to read data or there is no good data!";
+        }
+        
         
     });
 }
 
-void GPS::getCurrentCity(){
+std::string GPS::getCurrentCity(double lat, double lng){
+    Point point (lng,lat);
     json vnGeo;
-    std::ofstream geoOutput(_geoPolygonPath);
+    std::ifstream geoOutput(_geoPolygonPath.string());
     geoOutput>>vnGeo;
     for(const auto &features : vnGeo["features"] ){
         Polygon poly;
-        for (const autu& pair: features["geometry"]["coordinates"]){
+        for (const auto& pair: features["geometry"]["coordinates"]){
             float lng = pair[0];
             float lat = pair[1];
             bg::append(poly.outer(),Point(lng,lat));
         }
 
-        if (bg::within(point, poly)||bg::insterect(point,poly)){
-                _currentCity=features["properties"].value("name","Unkown City");
-                return features["properties".value("real_name","Unkown City")];
+        if (bg::within(point, poly)||bg::intersects(point,poly)){
+                _currentCity=features["properties"].value("name","Unknown City");
+                return features["properties"].value("real_name","Unknown City");
             }
     }
-    return "Unkown City"
+    return "Unknown City";
 }
 
 
@@ -185,12 +214,12 @@ void GPS::getCurrentCity(){
 
 
 void GPS::speedMonitor(){
-    while true{
+    while (true){
         std::lock_guard<std::mutex> lock(cacheMutex);
         float lat = _lat;
         float lng =_lng;
         float speed= _speed;
-        _currentRealnamecity = this->getCurrentCity();
+        _currentRealnamecity = this->getCurrentCity(lat,lng);
 
         if (speed >=40){
             std::this_thread::sleep_for(std::chrono::seconds(30));
@@ -203,4 +232,22 @@ void GPS::speedMonitor(){
         }
     }   
 
+}
+void GPS::startThread(){
+    std::thread reciverThread([this](){
+        this->startReadingFromGps();
+    });
+    std::thread speedMonitorThread([this](){
+        this->speedMonitor();
+    });
+    reciverThread.join();
+    speedMonitorThread.join();
+
+}
+GPS::~GPS(){
+    if (_serial && _serial->isOpen()) {
+        _serial->close();
+        delete _serial;
+        _serial = nullptr;
+    }
 }

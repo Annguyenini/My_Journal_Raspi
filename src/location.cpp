@@ -1,4 +1,4 @@
-#include "include/location.h"
+#include "location.h"
 
 
 void Location::cityLabelSetup(){

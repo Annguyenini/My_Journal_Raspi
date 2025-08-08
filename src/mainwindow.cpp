@@ -1,5 +1,6 @@
-#include "include/mainwindow.h"
-#include "include/camera.h"
+#include "mainwindow.h"
+#include "camera.h"
+#include "gps.h"
 #include "./ui_mainwindow.h"
 #include <QPushButton>
 #include <QMenu>
@@ -7,7 +8,8 @@
 #include <QLabel>
 #include <QPoint>       // for QPoint stuff
 #include <QWidget>      // base widget stuff
-#include <QObject>      
+#include <QObject>  
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -25,13 +27,13 @@ MainWindow::MainWindow(QWidget *parent)
     _central_widget->setLayout(_mainlayout);
     // Camera* camera = new Camera(_mainlayout);
     // camera->StartCamera();
+    GPS gps;
+    gps.startThread();
     show();
 }
 
-void mainWindow::timer(){
-    Qtimer * timer = new Qtimer(this);
-    connect(timer, &Qtimer::timeout, this, Location::)
-}
+// void MainWindow::timer(){
+// }
 MainWindow::~MainWindow()
 {
     delete ui;

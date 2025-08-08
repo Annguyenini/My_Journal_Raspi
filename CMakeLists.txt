@@ -8,31 +8,33 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets SerialPort)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialPort)
 find_package(OpenCV REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(Boost REQUIRED)
 find_package(SQLite3 REQUIRED)
-target_include_directories(trip PRIVATE ${SQLite3_INCLUDE_DIRS})
-target_link_libraries(trip PRIVATE ${SQLite3_LIBRARIES})
+
 pkg_check_modules(LIBCAMERA REQUIRED IMPORTED_TARGET libcamera)
 
 
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        camera.cpp
-        mainwindow.ui
+        src/main.cpp
+        src/mainwindow.cpp
+        src/camera.cpp
+        src/mainwindow.ui
+        src/gps.cpp
+        src/statusbar.cpp
         include/mainwindow.h
         include/camera.h
+        include/gps.h
+        include/json.hpp
 
 )
 include_directories(${CMAKE_SOURCE_DIR}/include)  # where libcam2opencv.h lives
 include_directories(/usr/include/opencv4/opencv2) 
 include_directories(/usr/local/include)
 include_directories(/usr/include)
-target_include_directories(trip PRIVATE /usr/include/boost)
 
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -64,8 +66,14 @@ else()
     endif()
 endif()
 
-target_link_libraries(trip PRIVATE Qt${QT_VERSION_MAJOR}::Widgets ${OpenCV_LIBS}
+target_link_libraries(trip PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::SerialPort ${OpenCV_LIBS}
     ${CMAKE_SOURCE_DIR}/lib/libcam2opencv.a PkgConfig::LIBCAMERA
+)
+target_include_directories(trip PRIVATE ${SQLite3_INCLUDE_DIRS})
+target_link_libraries(trip PRIVATE ${SQLite3_LIBRARIES})
+target_include_directories(trip PRIVATE /usr/include/boost)
+target_include_directories(trip PRIVATE
+    ${Qt${QT_VERSION_MAJOR}SerialPort_INCLUDE_DIRS}
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
