@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "camera.h"
 #include "gps.h"
+#include "button.h"
 #include "./ui_mainwindow.h"
 #include <QPushButton>
 #include <QMenu>
@@ -8,7 +9,8 @@
 #include <QLabel>
 #include <QPoint>       // for QPoint stuff
 #include <QWidget>      // base widget stuff
-#include <QObject>  
+#include <QObject>
+#include <QTimer>  
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -17,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setWindowTitle("Class-Based Window");
     resize(480, 800);
-    // showFullScreen();
+    showFullScreen();
     _central_widget = new QWidget(this);
     _central_widget->setStyleSheet("background-color: #292828;");
     setCentralWidget(_central_widget);
@@ -25,13 +27,41 @@ MainWindow::MainWindow(QWidget *parent)
     _mainlayout->setContentsMargins(0,0,0,0);
     _mainlayout->setSpacing(0);
     _central_widget->setLayout(_mainlayout);
-    // Camera* camera = new Camera(_mainlayout);
+    _camera = new Camera(_mainlayout);
     // camera->StartCamera();
-    GPS* gps =new GPS(_mainlayout);
+    StatusBar* stus = new StatusBar(_mainlayout,this);
+    stus -> SetUpStatusBar();
+    GPS* gps =new GPS(_mainlayout,this );
+    gps -> setUpGps();
+    _map = new MAP(_mainlayout,this);
+    _map->setUpMap();
+    _buttons = new Buttons(_mainlayout,this);
+    _buttons ->setUpButtons();
+
+    // GPSWorker*gps =new GPSWorker();
+    // gps->startReadingFromGps();
     // gps.startThread();
     // show();
+    MainWindow::setUpConnectionWithButtons();
 }
 
+void MainWindow::setUpConnectionWithButtons(){
+    connect(_buttons, &Buttons::callCamera, this,[this]{
+        if (_currentActFeaPtr !=nullptr){
+            _currentActFeaPtr->closeFea();
+            _currentActFeaPtr =nullptr;
+
+            };
+
+        _camera->setUpCamera();
+        _camera->StartCamera();
+        _currentActFeaPtr =_camera
+    });
+    connect(_button, &Buttons::callReloadMap, this,[this](){
+        _maplabel ->reloadMap();
+    });
+    
+}
 // void MainWindow::timer(){
 // }
 MainWindow::~MainWindow()

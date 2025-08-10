@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <vector>
 #include <utility>
+#include "mainwindow.h"
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
@@ -31,9 +32,10 @@ class GPSWorker: public QObject{
         std::string _currentRealnamecity;
         QSerialPort* _serial = nullptr;
         sqlite3* _db;
+        QString _buffer;
         float _speed=0;
-        float _lat =0;
-        float _lng =0;
+        float _lat = 21.357298;
+        float _lng = 105.834322;
         struct _gpsMetadataStruct{
             std::string city;
             float lat;
@@ -62,26 +64,29 @@ class GPSWorker: public QObject{
         void startThread();
         Q_SIGNAL void coordinatesUpdate(const float& lat, const float& lng);
         Q_SIGNAL void cityChanged(std::string nameId, std::string realName);
-
+        Q_SIGNAL void readyToShow();
         void loadGeoToCache();
         
 };
 class GPS: public QObject{
     Q_OBJECT
     private:
-        QLabel* _cityLabel;
+        QLabel*  _cityLabel;
         QLabel* _coordinatesLabel; 
         QVBoxLayout* _mainlayout;
         QThread* _workerThread;
         GPSWorker* _worker;
 
     public:
-    GPS(QVBoxLayout* mainlayout);
+    explicit GPS(QVBoxLayout * layout, QObject *parent = nullptr);
+
+    void setUpGps();
     ~GPS();
+    GPSWorker* worker() const { return _worker; }
     void handleCityUpdate(const std::string &nameId, const std::string &realName);
     void handleCoordinatesUpdate(float lat, float lng);
     void stop();
-    // Q_SIGNAL void stopWorker();
+    Q_SIGNAL void stopWorker();
 
     
 };

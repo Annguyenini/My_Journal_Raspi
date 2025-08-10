@@ -10,6 +10,9 @@
 #include <sqlite3.h>
 #include <ctime>
 #include "json.hpp"
+#include <vector>
+#include <string>
+
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
@@ -28,6 +31,7 @@ GPSWorker::GPSWorker(){
     // Paths will be set in initialPort()
 }
 void GPSWorker::initialPort(){
+    qDebug() << "Current thread ID:" << QThread::currentThreadId();
     // Create QSettings and QSerialPort in the correct thread
     if (!_settings) {
         _settings = new QSettings(QString::fromStdString((_parentDir / "Configure.ini").string()), QSettings::IniFormat);
@@ -44,15 +48,22 @@ void GPSWorker::initialPort(){
     }
     
     GPSWorker::setUpDB();
-    _serial = new QSerialPort();
+    _serial = new QSerialPort(this);
     
     try{
         _serial->setPortName("/dev/serial0");
         _serial->setBaudRate(QSerialPort::Baud9600);
+        _serial->setDataBits(QSerialPort::Data8);
+        _serial->setParity(QSerialPort::NoParity);
+        _serial->setStopBits(QSerialPort::OneStop);
+        _serial->setFlowControl(QSerialPort::NoFlowControl);
+    
     }
     catch(const std::exception &e ){
         qDebug()<<"Serial error:"<<e.what();
     }
+    Q_EMIT void readyToShow();
+    qDebug() << "readyToShow signal emitted";
 }
 bool GPSWorker::initPath(){
     if (!std::filesystem::exists(_databaseDir.string())){
@@ -94,30 +105,30 @@ bool GPSWorker::initPath(){
 }
 
 void GPSWorker::setUpDB(){
-    try{
-        int rc = sqlite3_open(_dbPath.string().c_str(),&_db);
-        qDebug() << "Is _db nullptr? " << (_db == nullptr);
-
-        char* errMsg = nullptr;
-        qDebug()<<"pass1";
-        if (rc!= SQLITE_OK) {
-        std::cerr << "Can't open database: " << sqlite3_errmsg(_db) << std::endl;
+    
+    int rc = sqlite3_open(_dbPath.string().c_str(),&_db);
+    if (!_db) {
+        qDebug() << "_db pointer is null!";
         return;
-        }
-        qDebug()<<"pass22";
-        const char* createTableSQL="CREATE TABLE IF NOT EXISTS log (time TEXT, city TEXT, lat REAL, lng REAL )";
-        qDebug() << "SQL: " << createTableSQL;
-        qDebug() << "sqlite3_db_errmsg: " << sqlite3_errmsg(_db);
-        rc = sqlite3_exec(_db, createTableSQL,nullptr,nullptr,&errMsg);
-        qDebug() << "sqlite3_exec rc:" << rc;
-        qDebug()<<"pass222";
-        if(rc != SQLITE_OK){
-            qDebug()<<"SQL error (INSERT): "<<errMsg;
-            sqlite3_free(errMsg);
-        }
     }
-    catch (const std::exception &e){
-        qDebug()<<"Faild to create table: "<<e.what();
+    auto threadId = QThread::currentThreadId();
+    qDebug() << "Current thread ID:" << threadId;
+    qDebug() << "Is _db nullptr? " << (_db == nullptr);
+    qDebug() << "sqlite3_open rc:" << rc;
+    char* errMsg = nullptr;
+    if (rc!= SQLITE_OK) {
+    std::cerr << "Can't open database: " << sqlite3_errmsg(_db) << std::endl;
+    return;
+    }
+    const char* createTableSQL="CREATE TABLE IF NOT EXISTS log (time TEXT, city TEXT, lat REAL, lng REAL )";
+    qDebug() << "SQL: " << createTableSQL;
+    
+    qDebug() << "sqlite3_db_errmsg: " << sqlite3_errmsg(_db);
+    rc = sqlite3_exec(_db, createTableSQL,nullptr,nullptr,&errMsg);
+    qDebug() << "sqlite3_exec rc:" << rc;
+    if(rc != SQLITE_OK){
+        qDebug()<<"SQL error (INSERT): "<<errMsg;
+        sqlite3_free(errMsg);
     }
     qDebug()<<"pass2";
 }
@@ -167,25 +178,47 @@ void GPSWorker::addingToCache(std::string time, const _gpsMetadataStruct & data)
 
 void GPSWorker::loadGeoToCache(){
     if(_isGeoLoaded)return;
+    std::vector<std::string>_cityvector;
     json vnGeo;
     std::ifstream geoOutput(_geoPolygonPath.string());
     geoOutput>>vnGeo;
     try{
         for (const auto& feature :vnGeo["features"]){
             Polygon poly;
-            for(const auto& pair: feature["geometry"]["coordinates"][0]){
-                
-                float lng = pair[0];
-                float lat = pair[1];
-                bg::append(poly.outer(),Point(lng,lat));
-                
+            if ((feature["geometry"].value("type",""))=="Polygon"){
+                for(const auto& pair: feature["geometry"]["coordinates"][0]){
+                    
+                    float lng = pair[0];
+                    float lat = pair[1];
+                    bg::append(poly.outer(),Point(lng,lat));
+                    
+                }
+            }
+            else if((feature["geometry"].value("type",""))=="MultiPolygon"){
+                for(const auto& rings: feature["geometry"]["coordinates"]){
+                    for(const auto pairs : rings[0]){
+                        float lng = pairs[0];
+                        float lat = pairs[1];
+                        bg::append(poly.outer(),Point(lng,lat));
+                    }
+                    
+                }
             }
             cityNames CN{
                 feature["properties"].value("name", "Unknown City"),
                 feature["properties"].value("real_name","Unknown City")
             };
             _geoCache.push_back({CN,poly});
-            qDebug() << "Loaded city:" << QString::fromStdString(CN.nameId);
+            _cityvector.push_back(CN.nameId);
+
+            // qDebug() << "Loaded city:" << QString::fromStdString(CN.nameId);
+        }
+        if(_cityvector.size()==63){
+            qDebug()<<"Loaded all";
+
+        }
+        else{
+            qDebug()<<"Missing city";
         }
     }
     catch (const std::exception & e){
@@ -195,9 +228,9 @@ void GPSWorker::loadGeoToCache(){
 }
 
 std::string GPSWorker::getCurrentCity(double lat, double lng){
-    qDebug()<<"pass3";
+    // qDebug()<<"pass3";
     if(!_isGeoLoaded)this->loadGeoToCache();
-    qDebug()<<"pass4";
+    // qDebug()<<"pass4";
     Point point (lng,lat);
     for(const auto& [names,poly]: _geoCache){
         if (bg::within(point,poly)|| bg::intersects(point, poly)){
@@ -224,32 +257,51 @@ void GPSWorker::startReadingFromGps(){
     catch (const std::exception &e){
         qDebug()<<"Serial error"<<e.what();
     }
-    qDebug()<<"pass333";
+    
+    
     connect(_serial, &QSerialPort::readyRead,this ,[&](){
-        qDebug()<<"pass3333";
-        QByteArray data = _serial->readAll();
-        QString line = QString::fromUtf8(data);
-        QStringList parts =line.split(',');
-        if (parts[0]=="$GPRMC" ){
-                float lat= parts[3].toFloat();
-                float lng= parts[5].toFloat();
-                this-> getCurrentCity(lat,lng);
+        if (!_serial) {
+            qDebug() << "Serial port not initialized!";
+            return;
+        }
+        // qDebug() << "_serial ptr:" << _serial << "thread:" << QThread::currentThread();
+
+        _buffer.append(QString::fromUtf8(_serial->readAll()));
+        int endIndex;
+        
+        while ((endIndex = _buffer.indexOf("\r\n")) != -1){
+
+            QString line = _buffer.left(endIndex);
+            _buffer.remove(0,endIndex+2);
+            // qDebug()<<line;
+            QStringList parts = line.split(',');
+            
+            if (parts[0]=="$GPRMC" ){
+                //_lat= parts[3].toFloat();
+                //_lng= parts[5].toFloat();
+                // testing
+                _lat += 0.000124;
+                _lng= 105.834322;
+                this-> getCurrentCity(_lat,_lng);
                 _gpsMetadataStruct data{
                     _currentCity,
-                    lat,
-                    lng
+                    _lat,
+                    _lng
                 };
                 this ->addingToCache(this->getCurrentTime(),data);
-                Q_EMIT coordinatesUpdate (lat,lng);
+                Q_EMIT coordinatesUpdate (_lat,_lng);
             }
                 
-        else if (parts[0]=="$GPVTG"){
+            else if (parts[0]=="$GPVTG"){
 
-            float speed=parts[7].toFloat();
+                float speed=parts[7].toFloat();
+            }
+            else{
+                // qDebug()<<"Fail to read data or there is no good data!";
+            }
         }
-        else{
-            qDebug()<<"Fail to read data or there is no good data!";
-        }
+
+        
         
         
     });

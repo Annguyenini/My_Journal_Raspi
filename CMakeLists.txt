@@ -8,8 +8,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets SerialPort)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialPort)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets SerialPort WebEngineWidgets )
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialPort WebEngineWidgets )
 find_package(OpenCV REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(Boost REQUIRED)
@@ -20,7 +20,9 @@ pkg_check_modules(LIBCAMERA REQUIRED IMPORTED_TARGET libcamera)
 
 set(PROJECT_SOURCES
         src/main.cpp
+        src/button.cpp
         src/mainwindow.cpp
+        src/Qwebengine.cpp
         src/camera.cpp
         src/mainwindow.ui
         src/gps.cpp
@@ -28,6 +30,7 @@ set(PROJECT_SOURCES
         src/statusbar.cpp
         include/mainwindow.h
         include/camera.h
+        include/button.h
         include/gps.h
         include/json.hpp
 
@@ -67,7 +70,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(trip PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::SerialPort ${OpenCV_LIBS}
+target_link_libraries(trip PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::SerialPort Qt${QT_VERSION_MAJOR}::WebEngineWidgets ${OpenCV_LIBS}
     ${CMAKE_SOURCE_DIR}/lib/libcam2opencv.a PkgConfig::LIBCAMERA
 )
 target_include_directories(trip PRIVATE ${SQLite3_INCLUDE_DIRS})

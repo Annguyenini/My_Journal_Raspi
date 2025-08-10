@@ -8,37 +8,55 @@
 #include <QWidget>      // base widget stuff
 #include <QObject>  
 
+
+StatusBar::StatusBar(QVBoxLayout* mainlayout, QObject* parent): QObject(parent),_mainlayout(mainlayout)
+,_statusbar(nullptr),_batteryPer(nullptr),_optionBtn(nullptr),_clockLabel(nullptr),_exitBtn(nullptr),_optionMenu(nullptr){};
+
+
 void StatusBar::option_menu(){
-    _optionMenu = new QMenu(this);
-    QAction* exit_btn =new QAction("Exit",this);
-    connect(exit_btn, &QAction::triggered, this, &QMainWindow::close);
-    _optionMenu-> addAction(exit_btn);
+    _optionMenu = new QMenu();
+    _exitBtn =new QAction("Exit",this);
+    connect(_exitBtn, &QAction::triggered, this, [this](){
+        QWidget * w = qobject_cast<QWidget*>(parent());
+        if (w){
+            w->close();
+        }
+    });
+    _optionMenu-> addAction(_exitBtn);
 }
 void StatusBar::SetUpStatusBar(){
-    QHBoxLayout* statusbar = new QHBoxLayout;
-    QLabel* clock_label= new QLabel();
-    clock_label->setObjectName ("Status-Bar");
-    clock_label->setStyleSheet("color: white; font-size: 15px; margin: 0; padding: 0;");
+    _statusbar = new QHBoxLayout;
+    _clockLabel= new QLabel();
+    _clockLabel->setObjectName ("Status-Bar");
+    _clockLabel->setStyleSheet("color: white; font-size: 15px; margin: 0; padding: 0;");
 
-    QPushButton* options_btn = new QPushButton ("≡");
-    options_btn->setStyleSheet(_btn_properties);
-    connect (options_btn, & QPushButton::clicked, this, [this,options_btn](){
+    _optionBtn = new QPushButton ("≡");
+    _optionBtn->setStyleSheet(_btn_properties);
+    connect (_optionBtn, & QPushButton::clicked, this, [this](){
         this->option_menu();
         if(_optionMenu){
-            _optionMenu->exec(options_btn->mapToGlobal(QPoint(0,options_btn->height())));
+            _optionMenu->exec(_optionBtn->mapToGlobal(QPoint(0,_optionBtn->height())));
         }
     });
 
-    QLabel* battery_percentage = new QLabel("batterry");
-    battery_percentage->setObjectName("Battery-percentage");
-    battery_percentage->setStyleSheet("color: white; font-size: 15px;");
+    _batteryPer = new QLabel("batterry");
+    _batteryPer->setObjectName("Battery-percentage");
+    _batteryPer->setStyleSheet("color: white; font-size: 15px;");
     
-    statusbar->addWidget(options_btn);
-    statusbar->addStretch(1);
-    statusbar->addWidget(clock_label);
-    statusbar->addStretch(1);
-    statusbar->addWidget(battery_percentage);
-    _mainlayout->insertLayout(0,statusbar);
+    _statusbar->addWidget(_optionBtn);
+    _statusbar->addStretch(1);
+    _statusbar->addWidget(_clockLabel);
+    _statusbar->addStretch(1);
+    _statusbar->addWidget(_batteryPer);
+    _mainlayout->addLayout(_statusbar);
 
     
+}
+// void StatusBar::closeApplication(){
+//     if (QWidget* widgetParent = qobject_cast<QWidget*>(parent())) {
+//         widgetParent->close(); // this will close your main window safely
+//     }
+// }
+StatusBar::~StatusBar(){
+    delete _statusbar;
 }

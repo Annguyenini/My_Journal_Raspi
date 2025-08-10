@@ -20,6 +20,7 @@ class Camera:public QObject {
 public:
     Camera(QVBoxLayout* mainlayout);
     ~Camera();
+    void setUpCamera();
     void StartCamera();
 
 private:

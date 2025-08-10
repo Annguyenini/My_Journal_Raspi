@@ -20,11 +20,13 @@ void CameraCallBack::hasFrame(const cv::Mat &frame, const libcamera::ControlList
 }
 
 Camera::Camera(QVBoxLayout* mainlayout) : _mainlayout(mainlayout), camera() {
+}
+void Camera::setUpCamera(){
     _CameraLabel = new QLabel();
     _CameraLabel->setObjectName("Camera-label");
     _CameraLabel->setMinimumSize(640, 480);  // set preferred size
     _CameraLabel->setAlignment(Qt::AlignCenter);
-    _mainlayout->insertWidget(0, _CameraLabel);
+    _mainlayout->insertWidget(2, _CameraLabel);
 
     myCallback = new CameraCallBack(_CameraLabel,this);
     connect(myCallback, &CameraCallBack::frameReady, this, [this](const QPixmap &pixmap) {
@@ -33,10 +35,6 @@ Camera::Camera(QVBoxLayout* mainlayout) : _mainlayout(mainlayout), camera() {
     camera.registerCallback(myCallback);
 }
 
-Camera::~Camera() {
-    delete myCallback;
-    delete _CameraLabel;
-}
 
 void Camera::StartCamera() {
     Libcam2OpenCVSettings setting;
@@ -50,4 +48,8 @@ void Camera::StartCamera() {
     // setting.saturation = 1.0f;     // Normal saturation
     // setting.lensPosition = -1.0f;  // Auto focus (or set manually if you want)
     camera.start(setting);
+}
+Camera::~Camera() {
+    delete myCallback;
+    delete _CameraLabel;
 }
