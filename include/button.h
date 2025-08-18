@@ -16,6 +16,7 @@ class Buttons :public QObject{
         QPushButton* _albumBtn;
         QPushButton* _snapPictureBtn;
         QPushButton* _recordBtn;
+        QPushButton* _photoSettingBtn;
         QString _btn_properties = R"(QPushButton {
                 background-color: #000000;
                 color: white;
@@ -31,12 +32,15 @@ class Buttons :public QObject{
     public:
         Buttons(QVBoxLayout* mainlayout, QObject* parent);
         void setUpButtons();
+        void cameraButtons();
+        void showNormalButtons();
         Q_SIGNAL void callAlbum();
         Q_SIGNAL void callCamera();
         Q_SIGNAL void callLog();
         Q_SIGNAL void callReloadMap();
         Q_SIGNAL void callSnap();
         Q_SIGNAL void callRecord();
+        Q_SIGNAL void callPhotoSetting();
 };
 
 #endif

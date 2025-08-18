@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CAMERA_H
+#define CAMERA_H
 #include <QObject>
 #include <QLabel>
 #include <QSlider>
@@ -11,7 +12,17 @@
 #include<memory>
 #include "gps.h"
 #include "album.h"
-#include "cameraworker.h"
+
+class CameraCallBack :public QObject, public Libcam2OpenCV::Callback {
+    Q_OBJECT
+public:
+    explicit CameraCallBack(QLabel* label, QObject* parent = nullptr);
+    void hasFrame(const cv::Mat &frame, const libcamera::ControlList &) override;
+    Q_SIGNAL void frameReady(const QPixmap &pixmap);  
+private:
+    QLabel* _CameraLabel;
+
+};
 
 class Camera:public QObject {
     Q_OBJECT
@@ -23,7 +34,7 @@ public:
     void showCamera();
     void stopCamera();
     // void resetCamera();
-    // void setLastFrame(const cv::Mat& frame);
+    void setLastFrame(const cv::Mat& frame);
     bool takePicture();
     void onSnapButtonClicked();
     // void recordVideo(const std::string& filename, int durationSeconds = 10);
@@ -37,18 +48,22 @@ private:
     QLabel* _CameraLabel;
     QVBoxLayout* _mainlayout;
     CameraWorker* _camera;
+    cv::Mat _lastFrame;
+    CameraCallBack* myCallback;
     QHBoxLayout* _recordTimers;
+    GPSWorker* _gpsObject;
     QPushButton* fiveTimer;
     QPushButton* tenTimer;
     QPushButton* fifteenTimer;
     QPushButton* twentyTimer;
-    
-    // cv::Mat _lastFrame;
-    // CameraCallBack* myCallback;
-    // QHBoxLayout* _recordTimers;
-    GPSWorker* _gpsObject;
-
-    // Libcam2OpenCVSettings _setting;
+    QHBoxLayout* _adjustmentBar;
+    QSlider* _brightnessSlider;
+    QSlider* _contrastSlider;
+    QSlider* _saturationSlider;
+    QSlider* _exposureSlider;
+    QPushButton* _submitBtn;
+    Libcam2OpenCVSettings _setting;
+    std::unique_ptr<libcamera::CameraManager> cm;
 
     bool isCameraSettingDisplay = false;
     // Buttons* _button;
@@ -94,3 +109,4 @@ private:
 //     }
 // };
 
+#endif // CAMERA_H

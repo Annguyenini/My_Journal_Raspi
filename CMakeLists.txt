@@ -7,32 +7,45 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets SerialPort WebEngineWidgets )
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialPort WebEngineWidgets )
+
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets SerialPort WebEngineWidgets Multimedia MultimediaWidgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets SerialPort WebEngineWidgets Multimedia MultimediaWidgets)
+find_package(Qt6 REQUIRED COMPONENTS OpenGLWidgets)
 find_package(OpenCV REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(Boost REQUIRED)
 find_package(SQLite3 REQUIRED)
+find_package(SDL2 REQUIRED)
 
 pkg_check_modules(LIBCAMERA REQUIRED IMPORTED_TARGET libcamera)
-
+pkg_check_modules(GST REQUIRED gstreamer-1.0>=1.16 gstreamer-video-1.0>=1.16)
+pkg_check_modules(GST_BASE REQUIRED gstreamer-base-1.0)
+pkg_check_modules(GST_APP REQUIRED gstreamer-app-1.0)
 
 set(PROJECT_SOURCES
         src/main.cpp
         src/button.cpp
         src/mainwindow.cpp
         src/Qwebengine.cpp
-        src/camera.cpp
+        src/camera/camera.cpp
+        src/camera/cameraworker.cpp
+        src/album.cpp
+        src/albumworker.cpp
         src/mainwindow.ui
         src/gps.cpp
         src/gpsworker.cpp
+        src/gscamera.cpp
         src/statusbar.cpp
         include/mainwindow.h
         include/camera.h
+        include/cameraworker.h
         include/button.h
         include/gps.h
         include/json.hpp
+        include/gscamera.h
+        include/album.h
 
 )
 include_directories(${CMAKE_SOURCE_DIR}/include)  # where libcam2opencv.h lives
@@ -70,16 +83,43 @@ else()
     endif()
 endif()
 
-target_link_libraries(trip PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::SerialPort Qt${QT_VERSION_MAJOR}::WebEngineWidgets ${OpenCV_LIBS}
+target_link_libraries(trip PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::SerialPort Qt${QT_VERSION_MAJOR}::WebEngineWidgets Qt${QT_VERSION_MAJOR}::Multimedia
+    Qt${QT_VERSION_MAJOR}::MultimediaWidgets
+ Qt${QT_VERSION_MAJOR}::OpenGLWidgets Qt6::Multimedia
+    Qt6::MultimediaWidgets ${OpenCV_LIBS}
     ${CMAKE_SOURCE_DIR}/lib/libcam2opencv.a PkgConfig::LIBCAMERA
 )
+target_link_libraries(trip PRIVATE
+    ${GST_LIBRARIES}
+    ${GST_BASE_LIBRARIES}
+    ${GST_APP_LIBRARIES}
+    ${SDL2_LIBRARIES}
+
+)
+target_include_directories(trip PRIVATE
+    ${GST_INCLUDE_DIRS}
+    ${GST_BASE_INCLUDE_DIRS}
+    ${GST_APP_INCLUDE_DIRS}
+    ${SDL2_INCLUDE_DIRS}
+
+)
+
 target_include_directories(trip PRIVATE ${SQLite3_INCLUDE_DIRS})
-target_link_libraries(trip PRIVATE ${SQLite3_LIBRARIES})
+target_link_libraries(trip PRIVATE ${SQLite3_LIBRARIES} )
+target_link_libraries(trip PRIVATE glib-2.0)
+
 target_include_directories(trip PRIVATE /usr/include/boost)
 target_include_directories(trip PRIVATE
     ${Qt${QT_VERSION_MAJOR}SerialPort_INCLUDE_DIRS}
 )
-
+target_include_directories(trip PRIVATE
+    ${GST_INCLUDE_DIRS}
+)
+link_directories(
+  ${GST_LIBRARY_DIRS}
+  ${GST_BASE_LIBRARY_DIRS}
+  ${GST_APP_LIBRARY_DIRS}
+)
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
@@ -104,3 +144,4 @@ install(TARGETS trip
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(trip)
 endif()
+

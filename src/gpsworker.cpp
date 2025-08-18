@@ -4,7 +4,7 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QObject>
-
+#include <QDebug>
 #include <fstream>
 #include <filesystem>
 #include <sqlite3.h>
@@ -12,7 +12,8 @@
 #include "json.hpp"
 #include <vector>
 #include <string>
-
+#include <thread>
+#include <chrono>
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
@@ -38,6 +39,7 @@ void GPSWorker::initialPort(){
         _databaseDir = _parentDir / _settings->value("Database/path").toString().toStdString();
         _dbPath = _parentDir /_settings->value("Database/gpsPath").toString().toStdString();
         _geoPolygonPath = _parentDir / _settings->value("Database/geoPolygonPath").toString().toStdString();
+        _imagesDir = _parentDir /_settings->value("Database/parentImagesPath").toString().toStdString();
         qDebug() << QString::fromStdString(_databaseDir.string());
         qDebug() << QString::fromStdString(_dbPath.string());
         qDebug() << QString::fromStdString(_geoPolygonPath.string());
@@ -139,7 +141,7 @@ std::string GPSWorker::getCurrentTime(){
     std::tm* now_tm = std::localtime(&now_time_t);
 
     std::ostringstream oss;
-    oss << std::put_time(now_tm,"%H:%M:%S");
+    oss << std::put_time(now_tm,"%Y-%m-%d_%H-%M-%S");
     return oss.str();
 }
 
@@ -237,6 +239,9 @@ std::string GPSWorker::getCurrentCity(double lat, double lng){
             if(names.nameId != _currentCity && names.nameId != "Unknown City"){
                 _currentCity = names.nameId;
                 Q_EMIT cityChanged(names.nameId,names.realName);
+                if(!std::filesystem::exists(_imagesDir / _currentCity)){
+                    std::filesystem::create_directories(_imagesDir / _currentCity);
+                }
                 return names.nameId;
             }
             
@@ -299,6 +304,7 @@ void GPSWorker::startReadingFromGps(){
             else{
                 // qDebug()<<"Fail to read data or there is no good data!";
             }
+            // std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
 
         
@@ -307,7 +313,20 @@ void GPSWorker::startReadingFromGps(){
     });
 }
 
-
+std::filesystem::path GPSWorker:: getCityImageDir(){
+    qDebug()<<"city image called";
+    qDebug()<<QString::fromStdString(_currentCity);
+    return _imagesDir / _currentCity;
+        };
+std::string GPSWorker:: returnCurrentCity(){
+    qDebug()<<"returnCurrentCity called";
+    qDebug()<<QString::fromStdString(_currentCity);
+            return _currentCity;
+        };
+std::pair<float,float> GPSWorker:: getCoordinates(){
+    qDebug()<<"return Coordinates";
+    return {_lat,_lng};
+}
 GPSWorker::~GPSWorker(){
     if (_settings) {
         delete _settings;

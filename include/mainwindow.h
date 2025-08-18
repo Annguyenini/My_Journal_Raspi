@@ -13,8 +13,12 @@
 #include <QWebEngineView>
 #include <QUrl>
 #include <string>
+#include <any>
 #include "button.h"
 #include "camera.h"
+#include "gscamera.h"
+#include "gps.h"
+#include "album.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -33,6 +37,8 @@ class MAP: public QObject{
         ~MAP();
         void setUpMap();
         void reloadMap();
+        void hideLabel();
+        void showLabel();
 };
 
 class MainWindow : public QMainWindow
@@ -56,14 +62,21 @@ protected:
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void resetCamera();
     void setUpConnectionWithButtons();
+
 private:
     Ui::MainWindow *ui;
     QWidget* _central_widget;
     Camera* _camera;
+    // GSCamera* _gscamera;
     Buttons* _buttons;
+    Album* _album;
+    GPS* _gps;
     MAP* _map;
-    auto* _currentActFeaPtr;
+    QHBoxLayout _recordTimers;
+    std::any _currentActFeaPtr;
+    // auto* _currentActFeaPtr ;
 };
 
 class StatusBar: public QObject{
@@ -92,8 +105,14 @@ class StatusBar: public QObject{
         ~StatusBar();
         void option_menu();
         void SetUpStatusBar();
+
     }; 
 
-
+// class Feature : public QObject{
+//     Q_OBJECT
+//     public:
+//         explicit Feature(QObject* parent);
+//         virtual void startFeature
+// }
 
 #endif // MAINWINDOW_H

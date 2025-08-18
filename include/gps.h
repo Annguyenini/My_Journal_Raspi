@@ -1,3 +1,6 @@
+#ifndef GPS_H
+#define GPS_H
+
 #include <QSerialPort>
 #include <QObject>
 #include <QApplication>
@@ -13,7 +16,7 @@
 #include <unordered_map>
 #include <vector>
 #include <utility>
-#include "mainwindow.h"
+// #include "mainwindow.h"
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
@@ -28,14 +31,15 @@ class GPSWorker: public QObject{
         std::filesystem::path _databaseDir;
         std::filesystem::path _dbPath;
         std::filesystem::path _geoPolygonPath;
-        std::string _currentCity;
-        std::string _currentRealnamecity;
+        inline static std::filesystem::path _imagesDir = "";
+        inline static std::string _currentCity = "";
+        inline static std::string _currentRealnamecity = "";
         QSerialPort* _serial = nullptr;
         sqlite3* _db;
         QString _buffer;
         float _speed=0;
-        float _lat = 21.357298;
-        float _lng = 105.834322;
+        inline static float _lat = 21.357298;
+        inline static float _lng = 105.834322;
         struct _gpsMetadataStruct{
             std::string city;
             float lat;
@@ -50,6 +54,7 @@ class GPSWorker: public QObject{
         };
         bool _isGeoLoaded = false;
         std::vector<std::pair<cityNames,Polygon>> _geoCache;
+        
     public:
         GPSWorker();
         ~GPSWorker();
@@ -66,7 +71,9 @@ class GPSWorker: public QObject{
         Q_SIGNAL void cityChanged(std::string nameId, std::string realName);
         Q_SIGNAL void readyToShow();
         void loadGeoToCache();
-        
+        std::filesystem::path getCityImageDir();
+        std::string returnCurrentCity();
+        std::pair<float,float> getCoordinates();
 };
 class GPS: public QObject{
     Q_OBJECT
@@ -86,7 +93,11 @@ class GPS: public QObject{
     void handleCityUpdate(const std::string &nameId, const std::string &realName);
     void handleCoordinatesUpdate(float lat, float lng);
     void stop();
+    void hideLabel();
+    void showLabel();
     Q_SIGNAL void stopWorker();
 
     
 };
+
+#endif

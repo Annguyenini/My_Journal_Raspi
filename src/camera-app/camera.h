@@ -16,7 +16,7 @@
 class Camera:public QObject {
     Q_OBJECT
 public:
-    explicit  Camera(QVBoxLayout* mainlayout);
+    explicit  Camera();
     ~Camera();
     void setUpCamera();
     void StartCamera();
@@ -31,9 +31,14 @@ public:
     void timerForVideo();
     void showTimer();
     void hideTimer();
+    std::string getCurrentTime();
+    void insertToDB(const std::string& path,std::string type);
+    void initDB();
+
+
+
     Q_SIGNAL void recordFinished();
 private:
-    AlbumWorker* _albumObject;
     QLabel* _CameraLabel;
     QVBoxLayout* _mainlayout;
     CameraWorker* _camera;
@@ -42,11 +47,15 @@ private:
     QPushButton* tenTimer;
     QPushButton* fifteenTimer;
     QPushButton* twentyTimer;
-    
+    std::filesystem::path _parentDir;
+    std::filesystem::path _albumDB;
+    SQLite3* _db;
+    QPushButton* _snapPictureBtn;
+    QPushButton*_cameraBtn;
+    QPushButton* _recordBtn;
     // cv::Mat _lastFrame;
     // CameraCallBack* myCallback;
     // QHBoxLayout* _recordTimers;
-    GPSWorker* _gpsObject;
 
     // Libcam2OpenCVSettings _setting;
 

@@ -9,10 +9,18 @@ void MAP::setUpMap(){
     _maplabel->setObjectName("Map-Label");
     _maplabel->load(QUrl("http://192.168.0.52:5000"));
     _maplabel->resize(200,200);
-    _mainlayout->addWidget(_maplabel);
+    this -> showLabel();
 }
 void MAP::reloadMap(){
     _maplabel->reload();
+}
+void MAP::hideLabel(){
+    _maplabel->hide();
+    _mainlayout->removeWidget(_maplabel);
+}
+void MAP::showLabel(){
+    _mainlayout->insertWidget(3,_maplabel);
+    _maplabel->show();
 }
 MAP::~MAP(){
     delete _maplabel;

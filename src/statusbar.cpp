@@ -15,6 +15,21 @@ StatusBar::StatusBar(QVBoxLayout* mainlayout, QObject* parent): QObject(parent),
 
 void StatusBar::option_menu(){
     _optionMenu = new QMenu();
+    _optionMenu->setStyleSheet(
+    "QMenu {"
+    "  background-color: #222;"
+    "  color: #fff;"
+    "  border: 1px solid #555;"
+    "}"
+    "QMenu::item {"
+    "  padding: 10px 30px;"        // ↑ increase padding for bigger click area
+    "  min-height: 40px;"           // ↑ ensure items are taller
+    "  font-size: 16px;"  
+    "}"
+    "QMenu::item:selected {"
+    "  background-color: #555;"
+    "}"
+);
     _exitBtn =new QAction("Exit",this);
     connect(_exitBtn, &QAction::triggered, this, [this](){
         QWidget * w = qobject_cast<QWidget*>(parent());
@@ -48,7 +63,7 @@ void StatusBar::SetUpStatusBar(){
     _statusbar->addWidget(_clockLabel);
     _statusbar->addStretch(1);
     _statusbar->addWidget(_batteryPer);
-    _mainlayout->addLayout(_statusbar);
+    _mainlayout->insertLayout(0,_statusbar);
 
     
 }

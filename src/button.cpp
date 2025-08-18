@@ -1,3 +1,4 @@
+#include <QObject>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
@@ -15,13 +16,14 @@ void Buttons::setUpButtons(){
     _cameraBtn =new QPushButton("Camera");
     _reloadBtn =new QPushButton("Reload");
     _snapPictureBtn =new QPushButton("Snap");
-    _recordBtn =mew QPushButton("Record");
+    _recordBtn =new QPushButton("Record");
+    _photoSettingBtn = new QPushButton("Photo Settings");
     _albumBtn->setObjectName("Album-Button");
 
     _logBtn->setObjectName("Log-Button");
     _cameraBtn->setObjectName("Camera-Button");
     _reloadBtn->setObjectName("Reload-Button");
-    for (QPushButton* btn :{_albumBtn, _logBtn, _cameraBtn, _reloadBtn}){
+    for (QPushButton* btn :{_albumBtn, _logBtn, _reloadBtn, _snapPictureBtn,_recordBtn,_photoSettingBtn, _cameraBtn}){
         btn->setStyleSheet(_btn_properties);
         _buttonsLayout->addWidget(btn);
         
@@ -40,18 +42,6 @@ void Buttons::setUpButtons(){
         Q_EMIT callReloadMap();
         
     });
-    _mainlayout->addLayout(_buttonsLayout);
-}
-
-void Button::cameraButtons(){
-    _logBtn->hide();
-    _reloadBtn->hide();
-    int i =1;
-    for (QPushButton* btn:{_snapPictureBtn,_recordBtn}){
-        btn ->setStyleSheet(_btn_properties);
-        _buttonsLayout->insertWidget(i,btn);
-        i++;
-    }
     connect(_snapPictureBtn,&QPushButton::clicked, this, [this](){
         Q_EMIT callSnap();
     });
@@ -59,4 +49,27 @@ void Button::cameraButtons(){
     connect(_recordBtn,&QPushButton::clicked, this, [this](){
         Q_EMIT callRecord();
     });
+    connect(_photoSettingBtn, &QPushButton::clicked, this, [this](){
+        Q_EMIT callPhotoSetting();
+    });
+    _mainlayout->addLayout(_buttonsLayout);
+    this->showNormalButtons();
+}
+void Buttons::showNormalButtons(){
+    _snapPictureBtn->hide();
+    _recordBtn->hide();
+    _photoSettingBtn->hide();
+    _logBtn->show();
+    _reloadBtn->show();
+    _albumBtn->show();
+}
+void Buttons::cameraButtons(){
+    _albumBtn->hide();
+    _logBtn->hide();
+    _reloadBtn->hide();
+    _snapPictureBtn->show();
+    _recordBtn->show();
+    _photoSettingBtn->show();
+    _cameraBtn->show();
+    
 }
