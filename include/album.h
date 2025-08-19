@@ -15,14 +15,10 @@
 #include <sqlite3.h>
 #include <gps.h>
 struct _albumsStruct {
-        std::string time;
-        std::string city;
         std::string path;
-        std::string type;
-        float lat;
-        float lng;
-        
-    };
+        std::string time;
+        std::string type;     
+};
 
 class AlbumWorker : public QObject{
     Q_OBJECT

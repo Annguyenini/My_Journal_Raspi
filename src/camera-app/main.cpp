@@ -1,6 +1,4 @@
 #include "camera.h"
-#include "gps.h"
-
 #include <QApplication>
 #include <QDebug>
 #include <QTextStream>
@@ -12,7 +10,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     // QSerialPort serial;
 
-    camera w;
+    Camera w;
     // StatusBar s;
     // s.SetUpStatusBar();
     // GPS g;

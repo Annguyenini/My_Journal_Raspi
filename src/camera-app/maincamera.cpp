@@ -1,5 +1,4 @@
 #include "camera.h"
-#include "gps.h"
 #include <thread>
 #include <chrono>
 #include <cstdlib>
@@ -22,30 +21,28 @@ using namespace std;
 // Libcam2OpenCV Camera::camera;
 Camera::Camera(QWidget *parent) 
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    setWindowTitle("Camera Window");
-    resize(800, 480);
+    this->setWindowTitle("Camera Window");
+    this->resize(800, 480);
 
     _central_widget = new QWidget(this);
     _central_widget->setStyleSheet("background-color: #292828;");
-    setCentralWidget(_central_widget);
+    this->setCentralWidget(_central_widget);
     _mainlayout = new QVBoxLayout (_central_widget);
     _mainlayout->setContentsMargins(0,0,0,0);
     _mainlayout->setSpacing(0);
     _central_widget->setLayout(_mainlayout);
     this->setUpCamera();
-    this->setUpButtons();
     this->initDB();    
-    this->startCamera();
+    this->StartCamera();
+    this->setUpButtons();
+
 }
 
 void Camera::setUpCamera(){
     qDebug() << "Setting up camera with settings:";
     // _gpsObject = new GPSWorker();
     _CameraLabel = new QLabel();
-    _albumObject = new AlbumWorker();
     _camera =new CameraWorker();
     qDebug()<<"pass";
     _CameraLabel->setObjectName("Camera-label");
@@ -56,11 +53,19 @@ void Camera::setUpCamera(){
     _CameraLabel->setAlignment(Qt::AlignCenter);
     // _CameraLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     // _mainlayout->insertWidget(1, _CameraLabel,1);
+    
+    _parentDir = std::filesystem::current_path().parent_path();
     _settings = new QSettings(QString::fromStdString((_parentDir / "Configure.ini").string()), QSettings::IniFormat);
-
-    _parentdir = _settings->value("Database/gallery").toString().toStdString();
-    _galleryPath = parentdir / settings->value("Database/galleryPath").toString().toStdString();
-    __albumDB = _settings->value("Database/albumsDB").toString().toStdString();
+    qDebug() << "Camera settings loaded from:" << QString::fromStdString((_parentDir / "Configure.ini").string());
+    _galleryPath = _parentDir / _settings->value("Database/galleryPath").toString().toStdString();
+    _albumDB = _parentDir / _settings->value("Database/albumsDB").toString().toStdString();
+    qDebug() << "Album DB path:" << QString::fromStdString(_albumDB.string());
+    qDebug() << "Parent directory:" << QString::fromStdString(_parentDir.string());
+    qDebug() << "Gallery path:" << QString::fromStdString(_galleryPath.string());
+    if (!std::filesystem::exists(_galleryPath)) {
+        std::filesystem::create_directories(_galleryPath);
+        qDebug() << "Gallery path created.";
+    } 
     
 }
 
@@ -84,7 +89,7 @@ void Camera::setUpButtons(){
     connect(_cameraBtn, &QPushButton::clicked, this, [this](){
         qDebug() << "Exiting camera mode...";
         this->stopCamera();
-        Camera::close();
+        QMainWindow::close();
     });
     _mainlayout->addLayout(_buttonsLayout);
         
@@ -115,10 +120,11 @@ void Camera::StartCamera() {
 
     // Show UI only after start is requested
     if (_mainlayout && _CameraLabel && _CameraLabel->parent() == nullptr)
-        _mainlayout->insertWidget(1, _CameraLabel, 1);
+        _mainlayout->insertWidget(0, _CameraLabel, 1);
     if (_CameraLabel) _CameraLabel->show();
 
     _isStarted  = true;
+    qDebug() << "Camera started successfully";
 }
 
 void Camera::stopCamera() {
@@ -147,7 +153,7 @@ void Camera::stopCamera() {
 
 
 bool Camera::takePicture() {
-    std::string filename = _galleryPath+"/"+getCurrentTime()+".jpg";
+    std::string filename = _galleryPath.string()+"/"+this->getCurrentTime()+".jpg";
         qDebug()<<QString::fromStdString(filename);
         _camera->requestPicture(filename);
         this -> insertToDB(filename,"photo");
@@ -161,14 +167,19 @@ void Camera::onSnapButtonClicked() {
     }
 }
 std::string Camera::getCurrentTime(){
-    QDateTime current = QDateTime::currentDateTime();
-    QString formattedTime = current.toString("yyyy-MM-dd_hh-mm-ss");
-    return formattedTime.toStdString();
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
+    std::tm* now_tm = std::localtime(&now_time_t);
+
+    std::ostringstream oss;
+    oss << std::put_time(now_tm,"%Y-%m-%d_%H-%M-%S");
+    return oss.str();
 }
+
 void Camera::startRpiCamHello(const int& duration) {
     _camera->stopCamera();
     Camera::hideTimer();
-    std::string filename = _galleryPath+"/"+getCurrentTime();
+    std::string filename = _galleryPath.string()+"/"+this->getCurrentTime();
     std::string filenameH264 = filename+".h264";
     std::string filenameMP4 = filename+".mp4";
     std::string recordCommand = "rpicam-vid --width 1920 --height 1080 -t "+std::to_string(duration)+" -o "+filenameH264;
@@ -191,10 +202,9 @@ void Camera::startRpiCamHello(const int& duration) {
 
     }
     this->hideTimer();
-    _albumObject -> insertToDB(filenameMP4,"video");
+    this -> insertToDB(filenameMP4,"video");
     // Q_EMIT recordFinished();
     _camera->startCamera();  // Restart camera after recording
-    Camera::hideTimer();
     qDebug() << "Recording finished, camera restarted";
 }   
 void Camera::timerForVideo(){

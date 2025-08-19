@@ -18,6 +18,7 @@ bool Album::setUpAlbumLabel(){
     }
     qDebug()<<"runnnnnnnnnnnn";
     _albumWorkerObject->getAllDatafromAlbumDB(_albumCache);
+    qDebug() << "Album cache size:" << _albumCache.size();
     _scrollArea = new QScrollArea();
     _scrollArea ->setWidgetResizable(true);
     _albumWidget = new QWidget();

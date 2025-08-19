@@ -168,7 +168,7 @@ void CameraWorker::startCamera() {
         // Set to 30fps with frame duration limits
         camcontrols = std::unique_ptr<libcamera::ControlList>(new libcamera::ControlList());
         std::cout<<"pass9";
-        camcontrols->set(controls::FrameDurationLimits, libcamera::Span<const std::int64_t, 2>({25000, 25000}));
+        camcontrols->set(controls::FrameDurationLimits, libcamera::Span<const std::int64_t, 2>({33333, 33333}));
         std::cout<<"pass10";
         if (camera->start(camcontrols.get()) != 0) {
             std::cout << "Failed to start camera!" << std::endl;

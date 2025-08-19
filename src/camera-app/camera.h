@@ -1,22 +1,28 @@
 #pragma once
+
 #include <QObject>
+#include <QMainWindow>
+
 #include <QLabel>
 #include <QSlider>
 #include <QVBoxLayout>
-#include "libcam2opencv.h"
 #include <QPushButton>
 #include <QGridLayout>
 #include <QScrollArea>
 #include <QDialog>
 #include<memory>
-#include "gps.h"
-#include "album.h"
+#include <QSettings>
+#include <QMutex>
+#include <QMutexLocker>
+#include <sqlite3.h>
+#include <filesystem>
 #include "cameraworker.h"
 
-class Camera:public QObject {
+
+class Camera: public QMainWindow {
     Q_OBJECT
 public:
-    explicit  Camera();
+    explicit Camera(QWidget *parent =nullptr);
     ~Camera();
     void setUpCamera();
     void StartCamera();
@@ -26,6 +32,7 @@ public:
     // void setLastFrame(const cv::Mat& frame);
     bool takePicture();
     void onSnapButtonClicked();
+    void setUpButtons();
     // void recordVideo(const std::string& filename, int durationSeconds = 10);
     void startRpiCamHello(const int& duration = 0);
     void timerForVideo();
@@ -43,13 +50,17 @@ private:
     QVBoxLayout* _mainlayout;
     CameraWorker* _camera;
     QHBoxLayout* _recordTimers;
+    QWidget* _central_widget;
+
     QPushButton* fiveTimer;
     QPushButton* tenTimer;
     QPushButton* fifteenTimer;
     QPushButton* twentyTimer;
     std::filesystem::path _parentDir;
+    std::filesystem::path _galleryPath;
     std::filesystem::path _albumDB;
-    SQLite3* _db;
+    sqlite3* _db;
+    QHBoxLayout* _buttonsLayout;
     QPushButton* _snapPictureBtn;
     QPushButton*_cameraBtn;
     QPushButton* _recordBtn;
