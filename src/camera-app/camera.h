@@ -5,6 +5,7 @@
 
 #include <QLabel>
 #include <QSlider>
+#include <QWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QGridLayout>
@@ -41,6 +42,7 @@ public:
     std::string getCurrentTime();
     void insertToDB(const std::string& path,std::string type);
     void initDB();
+    void displayCameraSettingbar();
 
 
 
@@ -64,17 +66,38 @@ private:
     QPushButton* _snapPictureBtn;
     QPushButton*_cameraBtn;
     QPushButton* _recordBtn;
-    // cv::Mat _lastFrame;
-    // CameraCallBack* myCallback;
-    // QHBoxLayout* _recordTimers;
+    QPushButton* _settingBtn;
 
-    // Libcam2OpenCVSettings _setting;
+    QHBoxLayout* _settingsbarLayout;
+    QVBoxLayout* _brightnessLayout;
+    QVBoxLayout* _contrastLayout;
+    QVBoxLayout* _saturationLayout;
+    QPushButton* _brightnessUpButton;
+    QPushButton* _brightnessDownButton;
+    QPushButton* _contrastUpButton;
+    QPushButton* _contrastDownButton;
+    QPushButton* _saturationUpButton;
+    QPushButton* _saturationDownButton;
+    QLabel* _brightnessLabel;
+    QLabel* _contrastLabel;
+    QLabel* _saturationLabel;
+    QWidget* _brightnessWidget;
+    QWidget* _contrastWidget;
+    QWidget* _saturationWidget;
 
-    bool isCameraSettingDisplay = false;
-    // Buttons* _button;
+    float BRIGHTNESSValue=0.0f;
+    float CONTRASTValue=1.0f;
+    float SATURATIONValue=1.0f;
+    void cameraSettingsLayout();
+    void setUpBrightnessButtons();
+    void setUpContrastButtons();
+    void setUpSaturationButtons();
     
-    bool _isStarted =false;
 
+    bool isCameraSettingDisplay = false;    
+
+    bool _isStarted =false;
+    bool _isSettingBarDisplay = false;
     QSettings* _settings;
     std::filesystem::path _captureDB= "";
    
@@ -83,6 +106,17 @@ private:
                 color: white;
                 font-size: 20px;
                 padding: 10px 20px;
+                border: none;
+                border-radius: 8px;
+            }
+            QPushButton:hover {
+                background-color: #005f99;
+})";
+QString _btn_setting_properties = R"(QPushButton {
+                background-color: #000000;
+                color: white;
+                font-size: 10px;
+                padding: 10px 10px;
                 border: none;
                 border-radius: 8px;
             }

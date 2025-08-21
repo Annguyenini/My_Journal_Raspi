@@ -36,7 +36,7 @@ Camera::Camera(QWidget *parent)
     this->initDB();    
     this->StartCamera();
     this->setUpButtons();
-
+    this ->cameraSettingsLayout();
 }
 
 void Camera::setUpCamera(){
@@ -74,8 +74,10 @@ void Camera::setUpButtons(){
     _buttonsLayout = new QHBoxLayout();
     _snapPictureBtn =new QPushButton("Snap");
     _recordBtn =new QPushButton("Record");
+    _settingBtn =new QPushButton("Settings");
+
     _cameraBtn =new QPushButton("Exit Camera");
-    for (QPushButton* btn :{_snapPictureBtn,_recordBtn,_cameraBtn}){
+    for (QPushButton* btn :{_snapPictureBtn,_recordBtn,_settingBtn,_cameraBtn}){
         btn->setStyleSheet(_btn_properties);
         _buttonsLayout->addWidget(btn);
     }
@@ -85,6 +87,9 @@ void Camera::setUpButtons(){
     connect(_recordBtn, &QPushButton::clicked, this, [this](){
         qDebug() << "Recording video...";
         Camera::timerForVideo();
+    });
+    connect(_settingBtn, &QPushButton::clicked,this,[this](){
+        this->displayCameraSettingbar();
     });
     connect(_cameraBtn, &QPushButton::clicked, this, [this](){
         qDebug() << "Exiting camera mode...";
@@ -201,8 +206,17 @@ void Camera::startRpiCamHello(const int& duration) {
         std::cerr << "rm fail" << ret << std::endl;
 
     }
+    std::string thumbpath = filename+"_thumb.jpg";
+    std::string getthumbnail = "ffmpeg -i "+filenameMP4+" -ss 00:00:01.000 -vframes 1 "+thumbpath;
+
+    int thumb = std::system(getthumbnail.c_str());
+     if(thumb !=0 ){
+        std::cerr << "thumb fail" << ret << std::endl;
+
+    }
     this->hideTimer();
     this -> insertToDB(filenameMP4,"video");
+    this -> insertToDB(thumbpath,"image");
     // Q_EMIT recordFinished();
     _camera->startCamera();  // Restart camera after recording
     qDebug() << "Recording finished, camera restarted";

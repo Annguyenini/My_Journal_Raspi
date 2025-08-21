@@ -29,23 +29,18 @@ set(PROJECT_SOURCES
         src/button.cpp
         src/mainwindow.cpp
         src/Qwebengine.cpp
-        src/camera/camera.cpp
-        src/camera/cameraworker.cpp
         src/album.cpp
         src/albumworker.cpp
         src/mainwindow.ui
         src/gps.cpp
         src/gpsworker.cpp
-        src/gscamera.cpp
         src/statusbar.cpp
         include/mainwindow.h
-        include/camera.h
-        include/cameraworker.h
         include/button.h
         include/gps.h
         include/json.hpp
-        include/gscamera.h
         include/album.h
+        include/configure.h
 
 )
 include_directories(${CMAKE_SOURCE_DIR}/include)  # where libcam2opencv.h lives

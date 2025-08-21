@@ -1,2 +1,8 @@
 build/
 logs/
+src/camera/
+src/test/
+src/vault/
+include/test/
+include/vault/
+lib/

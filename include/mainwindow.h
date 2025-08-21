@@ -8,17 +8,17 @@
 #include <QLabel>
 #include <QPoint>       // for QPoint stuff
 #include <QWidget>      // base widget stuff
-#include <QObject>     
+#include <QObject>   
+#include <QLayout>  
 #include <QString> 
 #include <QWebEngineView>
 #include <QUrl>
 #include <string>
 #include <any>
 #include "button.h"
-#include "camera.h"
-#include "gscamera.h"
 #include "gps.h"
 #include "album.h"
+#include "configure.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -31,54 +31,19 @@ class MAP: public QObject{
     private:
         QVBoxLayout* _mainlayout;
         QWebEngineView* _maplabel;
+        QLayout* _mainLabel;
+        QLabel* _mainBackgroundLabel;
+        bool _isDisplay = false;
+        bool _isMap =false;
         
     public:
         MAP(QVBoxLayout* mainlayout,QObject* parent);
         ~MAP();
         void setUpMap();
         void reloadMap();
-        void hideLabel();
-        void showLabel();
+        void displayMap();
+        void switchBackground();
 };
-
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
-protected:  
-    
-    QVBoxLayout* _mainlayout;
-     QString _btn_properties = R"(QPushButton {
-                background-color: #000000;
-                color: white;
-                font-size: 20px;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 8px;
-            }
-            QPushButton:hover {
-                background-color: #005f99;
-})";
-
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-    void resetCamera();
-    void setUpConnectionWithButtons();
-
-private:
-    Ui::MainWindow *ui;
-    QWidget* _central_widget;
-    Camera* _camera;
-    // GSCamera* _gscamera;
-    Buttons* _buttons;
-    Album* _album;
-    GPS* _gps;
-    MAP* _map;
-    QHBoxLayout _recordTimers;
-    std::any _currentActFeaPtr;
-    // auto* _currentActFeaPtr ;
-};
-
 class StatusBar: public QObject{
     Q_OBJECT
     private:
@@ -89,22 +54,13 @@ class StatusBar: public QObject{
         QMenu* _optionMenu;
         QLabel* _clockLabel;
         QAction* _exitBtn;
-        QString _btn_properties = R"(QPushButton {
-                background-color: #000000;
-                color: white;
-                font-size: 20px;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 8px;
-            }
-            QPushButton:hover {
-                background-color: #005f99;
-        })";
+        QAction* _mapBtn;
     public:
         explicit StatusBar(QVBoxLayout* mainlayoutn, QObject* parent =nullptr);
         ~StatusBar();
         void option_menu();
         void SetUpStatusBar();
+        Q_SIGNAL void changeBackground();
 
     }; 
 
@@ -114,5 +70,31 @@ class StatusBar: public QObject{
 //         explicit Feature(QObject* parent);
 //         virtual void startFeature
 // }
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+protected:  
+    
+    QVBoxLayout* _mainlayout;
+
+public:
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+    void setUpConnectionWithButtons();
+
+private:
+    Ui::MainWindow *ui;
+    QWidget* _central_widget;
+    Buttons* _buttons;
+    Album* _album;
+    GPS* _gps;
+    MAP* _map;
+    StatusBar* _stus;
+    QHBoxLayout _recordTimers;
+    std::any _currentActFeaPtr;
+    // auto* _currentActFeaPtr ;
+};
+
 
 #endif // MAINWINDOW_H

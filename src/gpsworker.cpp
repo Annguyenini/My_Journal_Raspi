@@ -26,8 +26,6 @@ namespace bg = boost::geometry;
 std::unordered_map<std::string, GPSWorker::_gpsMetadataStruct> GPSWorker::_cache;
 std::mutex GPSWorker::cacheMutex;
 GPSWorker::GPSWorker(){
-    _parentDir = std::filesystem::current_path().parent_path();
-    _settings = nullptr;
     // Delay all QObject creation to initialPort()
     // Paths will be set in initialPort()
 }
@@ -35,11 +33,7 @@ void GPSWorker::initialPort(){
     qDebug() << "Current thread ID:" << QThread::currentThreadId();
     // Create QSettings and QSerialPort in the correct thread
     if (!_settings) {
-        _settings = new QSettings(QString::fromStdString((_parentDir / "Configure.ini").string()), QSettings::IniFormat);
-        _databaseDir = _parentDir / _settings->value("Database/path").toString().toStdString();
-        _dbPath = _parentDir /_settings->value("Database/gpsPath").toString().toStdString();
-        _geoPolygonPath = _parentDir / _settings->value("Database/geoPolygonPath").toString().toStdString();
-        _imagesDir = _parentDir /_settings->value("Database/parentImagesPath").toString().toStdString();
+        
         qDebug() << QString::fromStdString(_databaseDir.string());
         qDebug() << QString::fromStdString(_dbPath.string());
         qDebug() << QString::fromStdString(_geoPolygonPath.string());
@@ -124,7 +118,12 @@ void GPSWorker::setUpDB(){
     }
     const char* createTableSQL="CREATE TABLE IF NOT EXISTS log (time TEXT, city TEXT, lat REAL, lng REAL )";
     qDebug() << "SQL: " << createTableSQL;
-    
+    if (sqlite3_exec(_db, "PRAGMA journal_mode = WAL;", nullptr, nullptr, &errMsg) != SQLITE_OK) {
+        std::cerr << "Failed to enable WAL: " << errMsg << "\n";
+        sqlite3_free(errMsg);
+    } else {
+        std::cout << "WAL mode enabled!\n";
+    }
     qDebug() << "sqlite3_db_errmsg: " << sqlite3_errmsg(_db);
     rc = sqlite3_exec(_db, createTableSQL,nullptr,nullptr,&errMsg);
     qDebug() << "sqlite3_exec rc:" << rc;
@@ -238,10 +237,10 @@ std::string GPSWorker::getCurrentCity(double lat, double lng){
         if (bg::within(point,poly)|| bg::intersects(point, poly)){
             if(names.nameId != _currentCity && names.nameId != "Unknown City"){
                 _currentCity = names.nameId;
-                Q_EMIT cityChanged(names.nameId,names.realName);
-                if(!std::filesystem::exists(_imagesDir / _currentCity)){
-                    std::filesystem::create_directories(_imagesDir / _currentCity);
-                }
+                Q_EMIT cityChanged(names.nameId,names.realName.empty() ? "Unkown City" : names.realName);
+                // if(!std::filesystem::exists(_imagesDir / _currentCity)){
+                //     std::filesystem::create_directories(_imagesDir / _currentCity);
+                // }
                 return names.nameId;
             }
             
@@ -294,7 +293,7 @@ void GPSWorker::startReadingFromGps(){
                     _lng
                 };
                 this ->addingToCache(this->getCurrentTime(),data);
-                Q_EMIT coordinatesUpdate (_lat,_lng);
+                Q_EMIT coordinatesUpdate (_lat== 0.0f ? 0.0 :_lat , _lng== 0.0f ? 0.0 : _lng);
             }
                 
             else if (parts[0]=="$GPVTG"){
@@ -313,11 +312,7 @@ void GPSWorker::startReadingFromGps(){
     });
 }
 
-std::filesystem::path GPSWorker:: getCityImageDir(){
-    qDebug()<<"city image called";
-    qDebug()<<QString::fromStdString(_currentCity);
-    return _imagesDir / _currentCity;
-        };
+
 std::string GPSWorker:: returnCurrentCity(){
     qDebug()<<"returnCurrentCity called";
     qDebug()<<QString::fromStdString(_currentCity);

@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "camera.h"
 #include "gps.h"
 #include "button.h"
 #include "./ui_mainwindow.h"
@@ -33,19 +32,14 @@ MainWindow::MainWindow(QWidget *parent)
     _mainlayout->setSpacing(0);
     _central_widget->setLayout(_mainlayout);
 
-    StatusBar* stus = new StatusBar(_mainlayout,this);
-    stus -> SetUpStatusBar();
-    _camera = new Camera(_mainlayout);
-    _camera->setUpCamera();    
-    // _gscamera =new GSCamera();
-    // _gscamera ->start();
-    // _mainlayout ->addWidget(_gscamera);
-    // _tcamera = new TCamera(_mainlayout);
-    // _tcamera->startCamera();
+    _stus = new StatusBar(_mainlayout,this);
+    _stus -> SetUpStatusBar(); 
     _gps =new GPS(_mainlayout,this );
     _gps -> setUpGps();
     _map = new MAP(_mainlayout,this);
     _map->setUpMap();
+    _map -> displayMap();
+
     _buttons = new Buttons(_mainlayout,this);
     _buttons ->setUpButtons();
 
@@ -75,35 +69,31 @@ void MainWindow::setUpConnectionWithButtons(){
     });
     
     connect(_buttons,&Buttons::callAlbum, this,[this](){
-        bool isAlbumDisplay =_album ->setUpAlbumLabel();
+        bool isAlbumDisplay =_album ->displayAlbum();
         if(isAlbumDisplay==true){
-            _map->hideLabel();
+            
             _gps->hideLabel();  
             _currentActFeaPtr = _album; 
             qDebug()<<"album open";
         }     
         else if(isAlbumDisplay==false){
             _gps->showLabel();
-            _map->showLabel();
             _currentActFeaPtr.reset();
             _currentActFeaPtr = _map;
         }
+        _map -> displayMap();
         qDebug()<<"Finished set up album";
         });
+    connect (_stus,&StatusBar::changeBackground, this,[this](){
+        qDebug()<<"called";
+        // _map->switchBackground();
+    });
 }
+
 
 // void MainWindow::timer(){
 // }
-// void MainWindow::resetCamera(){
-//     // if (_camera) {
-//     //     _camera->stopCamera();
-//     //     delete _camera;
-//     //     _camera = nullptr;
-//     // }
-//     // _camera = new Camera(_mainlayout);
-//     // _camera->setUpCamera(_cameraSetting);
-//     // _camera->StartCamera();
-// }
+
 MainWindow::~MainWindow()
 {
     delete ui;

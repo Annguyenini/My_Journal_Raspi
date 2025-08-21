@@ -15,29 +15,20 @@ StatusBar::StatusBar(QVBoxLayout* mainlayout, QObject* parent): QObject(parent),
 
 void StatusBar::option_menu(){
     _optionMenu = new QMenu();
-    _optionMenu->setStyleSheet(
-    "QMenu {"
-    "  background-color: #222;"
-    "  color: #fff;"
-    "  border: 1px solid #555;"
-    "}"
-    "QMenu::item {"
-    "  padding: 10px 30px;"        // ↑ increase padding for bigger click area
-    "  min-height: 40px;"           // ↑ ensure items are taller
-    "  font-size: 16px;"  
-    "}"
-    "QMenu::item:selected {"
-    "  background-color: #555;"
-    "}"
-);
+    _optionMenu->setStyleSheet(actionPro);
     _exitBtn =new QAction("Exit",this);
+    _mapBtn =new QAction("Map", this);
     connect(_exitBtn, &QAction::triggered, this, [this](){
         QWidget * w = qobject_cast<QWidget*>(parent());
         if (w){
             w->close();
         }
     });
+    connect (_mapBtn,&QAction::triggered,this,[this](){
+        Q_EMIT changeBackground();
+    });
     _optionMenu-> addAction(_exitBtn);
+    _optionMenu ->addAction(_mapBtn);
 }
 void StatusBar::SetUpStatusBar(){
     _statusbar = new QHBoxLayout;

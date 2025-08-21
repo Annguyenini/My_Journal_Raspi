@@ -1,28 +1,50 @@
-
+#include"camera.h"
+#include "cameraworker.h"
 void CameraWorker::setBrightness (float value){
     BRIGHTNESS = value;
-    this->applySettings();
+    qDebug() << "Setting brightness to:" << BRIGHTNESS;
+     for(auto &req : requests) {
+        if (req && (req->status() == libcamera::Request::RequestPending || 
+                       req->status() == libcamera::Request::RequestComplete)) {}
+            camcontrols->set(libcamera::controls::Brightness, BRIGHTNESS);
+            req->controls() = std::move(*camcontrols);
+        }
+    
     return;
 };
 void CameraWorker::setContrast (float value){
     CONTRAST = value;
-    this->applySettings();
+    qDebug() << "Setting contrast to:" << CONTRAST;
+    for(auto &req : requests) {
+        if (req && (req->status() == libcamera::Request::RequestPending || 
+                       req->status() == libcamera::Request::RequestComplete)) {}
+            camcontrols->set(libcamera::controls::Contrast, CONTRAST);
+            req->controls() = std::move(*camcontrols);
+    }
     return;
 };
 void CameraWorker::setSaturation (float value){
     SATURATION = value;
-    this->applySettings();
+    qDebug() << "Setting saturation to:" << SATURATION;
+     for(auto &req : requests) {
+        if (req && (req->status() == libcamera::Request::RequestPending || 
+                       req->status() == libcamera::Request::RequestComplete)) {}
+            camcontrols->set(libcamera::controls::Saturation, SATURATION);
+            req->controls() = std::move(*camcontrols);
+    }
 
     return;
 };
 void CameraWorker::setISO(float value){
     ISO = value;
+    qDebug() << "Setting ISO to:" << ISO;
     this->applySettings();
 
     return;
 };
 void CameraWorker::setExposure(float value){
     EXPOSURE = value;
+    qDebug() << "Setting exposure to:" << EXPOSURE;
     this->applySettings();
 
     return;
@@ -30,158 +52,171 @@ void CameraWorker::setExposure(float value){
 void CameraWorker::setRedGain(float rGain){
     
     R_GAIN = rGain;
+    qDebug() << "Setting red gain to:" << R_GAIN;
     this->applySettings();
     return;
 };    
 void CameraWorker::setBlueGain(float bGain){
     
     B_GAIN = bGain;
+    qDebug() << "Setting blue gain to:" << B_GAIN;
     this->applySettings();
     return;
 };   
 
 void CameraWorker::applySettings(){
-    _cameraControls->set(libcamera::controls::Brightness, BRIGHTNESS);
-    _cameraControls->set (libcamera::controls::Contrast,CONTRAST);
-    _cameraControls->set(libcamera::controls::Saturation, SATURATION);
-    _cameraControls->set(libcamera::controls::AnalogueGain, ISO /100.0f);
-    _cameraControls->set (libcamera::controls::ExposureTime,EXPOSURE);
-    _cameraControls->set(libcamera::controls::ColourGains, ColourGains(R_GAIN, B_GAIN));
-    _camera->setControl(_cameraControls.get());
+    for(auto &req : requests) {
+        if (req && (req->status() == libcamera::Request::RequestPending || 
+                       req->status() == libcamera::Request::RequestComplete)) {
+            
+            // Directly modify existing controls - no std::move overhead
+           
+            camcontrols->set(libcamera::controls::Brightness, BRIGHTNESS);
+            camcontrols->set (libcamera::controls::Contrast,CONTRAST);
+            camcontrols->set(libcamera::controls::Saturation, SATURATION);
+            // // camcontrols->set(libcamera::controls::AnalogueGain, ISO );
+            // // camcontrols->set (libcamera::controls::ExposureTime,EXPOSURE);
+            // camcontrols->set(libcamera::controls::ColourGains, { R_GAIN, B_GAIN });
+            qDebug() << "Applying camera settings:";
+            req->controls() = std::move(*camcontrols);
+        }
+    }
+    
+
 }
 
 void Camera::cameraSettingsLayout(){
-    _settingBarSlider= new QHBoxLayout();
-    _settingBarLabel = new QHBoxLayout();
-    this->setUpBrightnessSlider();
-    this->setUpContrastSlider();
-    this->setUpSaturationSlider();
-    this->setUpISO();
-    this->setUpExposureSlider();
-    this->setUpColorGain();
-    _settingBarSlider->setAlignment(Qt::AlignCenter);
-    _CameraLabel->addLayout(_settingBarSlider);   
+    _settingsbarLayout = new QHBoxLayout();
+    _brightnessWidget = new QWidget();
+    _contrastWidget = new QWidget();
+    _saturationWidget = new QWidget();
+
+
+    this->setUpBrightnessButtons();
+    this->setUpContrastButtons();
+    this->setUpSaturationButtons();
+    _settingsbarLayout ->addWidget(_brightnessWidget);
+    _settingsbarLayout ->addWidget(_contrastWidget);
+    _settingsbarLayout ->addWidget(_saturationWidget);
+
        
 }
-void Camera::setUpBrightnessSlider(){
-    _brightnessSlider = new QSlider(Qt::Vertical);
-    _brightnessSlider ->setMinimum(-100);
-    _brightnessSlider ->setMaximum(200);
-    _brightnessSlider ->setValue(0);
-    _brightnessSlider->setFixedHeight(150);
-    _brightnessSlider->setTickPosition(QSlider::TicksBothSides);
+void Camera::displayCameraSettingbar(){
+    if(!_isSettingBarDisplay){
+        _brightnessWidget->setVisible(true);
+        _contrastWidget->setVisible(true);
+        _saturationWidget->setVisible(true);
+        _isSettingBarDisplay = true;
+        _mainlayout->insertLayout(1,_settingsbarLayout);
+        qDebug()<<"show";
 
 
+    }
+    else{
+        _mainlayout->removeItem(_settingsbarLayout);
+        _brightnessWidget->setVisible(false);
+        _contrastWidget->setVisible(false);
+        _saturationWidget->setVisible(false);
+        _isSettingBarDisplay = false;
+        qDebug()<<"hide";
+    }
+}
+void Camera::setUpBrightnessButtons(){
+    _brightnessLayout = new QVBoxLayout(_brightnessWidget);
+    _brightnessUpButton = new QPushButton("Brightness Up");
+    _brightnessDownButton = new QPushButton("Brightness Down");
+    _brightnessUpButton->setStyleSheet(_btn_setting_properties);
+    _brightnessDownButton->setStyleSheet(_btn_setting_properties);
     _brightnessLabel =new QLabel();
-    _brightnessLabel ->setText(QString("Brightness: ")+QString::number(_brightnessSlider->value()));
+    _brightnessLabel ->setText(QString("Brightness: ")+QString::number(BRIGHTNESSValue *100.0f));
+    _brightnessLabel->setStyleSheet("color: white; font-size: 15px");
 
+    connect(_brightnessUpButton, &QPushButton::clicked, this, [this](){
+        BRIGHTNESSValue += 0.02f;
+         if (BRIGHTNESSValue > 0.5f) {
+            BRIGHTNESSValue = 0.5f; // Clamp to max value
+        }
+        _camera->setBrightness(BRIGHTNESSValue);
+        _brightnessLabel ->setText(QString("Brightness: ")+QString::number(BRIGHTNESSValue *100.0f));
 
-    _settingBarLabel ->addWidget(_brightnessLabel);
-    _settingBarSlider->addWidget(_brightnessSlider);
-    connect(_brightnessSlider, &QSlider::valueChanged, this, [this](int value) {
-        _camera->setBrightness(value / 100.0f);
-        _brightnessLabel ->setText(QString("Brightness: ")+QString::number(_brightnessSlider->value()));
-    }); 
-}
-void Camera::setUpContrastSlider(){
-    _contrastSlider = new QSlider(QT::Vertical);
-    _contrastSlider->setMinimum(-100);
-    _contrastSlider->setMaximum(200);
-    _contrastSlider->setValue(0);
-    _contrastSlider->setFixedHeight(150);
-    _contrastSlider->setTickPosition(QSlider::TicksBothSides);
-
-    _contrastLabel =new QLabel();
-    _contrastLabel ->setText(QString("Contrast: ")+QString::number(_contrastSlider->value()));
-
-    _settingBarLabel ->addWidget(_contrastLable);
-    _settingBarSlider->addWidget(_contrastSlider);
-    connect(_contrastSlider, &QSlider::valueChanged,this, [this](int value){
-        _camera->setContrast(value/100.0f)
-        _contrastLabel ->setText(QString("Contrast: ")+QString::number(_contrastSlider->value()));
-
-    })
-}
-void Camera::setUpSaturationSlider(){
-    _saturationSlider = new QSlider(Qt::Vertical);
-    _saturationSlider->setMinimum(-100);
-    _saturationSlider->setMaximum(200);
-    _saturationSlider->setValue(0);
-    _saturationSlider->setFixedHeight(150);
-    _saturationSlider->setTickPosition(QSlider::TicksBothSides);
-    _settingBarSlider->addWidget(_saturationSlider);
-    connect(_saturationSlider,&QSlider::valueChanged,this,[this](int value){
-        _camera ->setSaturation(value /100.0f);
     });
-}
-void Camera::setUpISO(){
-    _isoSlider = new QSlider(Qt::Vertical);
-    _isoSlider->setMinimum(100);
-    _isoSlider->setMaximum(800);
-    _isoSlider->setValue(100);
-    _isoSlider->setFixedHeight(150);
-    _isoSlider->setTickPosition(QSlider::TicksBothSides);
+    connect(_brightnessDownButton, &QPushButton::clicked, this, [this](){
+        BRIGHTNESSValue -= 0.02f;
+        if (BRIGHTNESSValue < -0.5f) {
+            BRIGHTNESSValue = -0.5f; // Clamp to max value
+        }
+        _camera->setBrightness(BRIGHTNESSValue);
+        _brightnessLabel ->setText(QString("Brightness: ")+QString::number(BRIGHTNESSValue *100.0f));
 
-    _isoLabel =new QLabel();
-    _isoLabel ->setText(QString("ISO: ")+QString::number(_isoSlider->value()));
+    });
+    _brightnessLayout->insertWidget(0,_brightnessUpButton);
+    _brightnessLayout->insertWidget(1,_brightnessLabel);
+    _brightnessLayout->insertWidget(2,_brightnessDownButton);
     
-    _settingBarLabel ->addWidget(_isoLable);
-    _settingBarSlider->addWidget(_isoSlider);
-    connect(_isoSlider,&QSlider::valueChanged,this,[this](int value)(){
-        _camera ->setISO(value /100.0f);
-        _isoLabel ->setText(QString("ISO: ")+QString::number(_isoSlider->value()));
 
-    });
 }
-void Camera::setUpExposureSlider(){
-    _exposureSlider = new QSlider(Qt::Vertical);
-    _exposureSlider->setMinimum(-1000);
-    _exposureSlider->setMaximum(1000);
-    _exposureSlider->setValue(0);
-    _exposureSlider->setFixedHeight(150);
-    _exposureSlider->setTickPosition(QSlider::TicksBothSides);
-    _exposureLabel =new QLabel();
-    _exposureLabel ->setText(QString("Exposure: ")+QString::number(_exposureSlider->value()));
-    
-    _settingBarLabel ->addWidget(_exposureLable);
-    _settingBarSlider->addWidget(_exposureSlider);
-    connect(_exposureSlider,&QSlider::valueChanged,this,[this](int value){
-        _camera ->setExposure(value /100.0f);
-        _exposureLabel ->setText(QString("Exposure: ")+QString::number(_exposureSlider->value()));
+void Camera::setUpContrastButtons() {
+    _contrastLayout = new QVBoxLayout(_contrastWidget);
 
+    _contrastUpButton = new QPushButton("Contrast Up");
+    _contrastDownButton = new QPushButton("Contrast Down");
+    _contrastUpButton->setStyleSheet(_btn_setting_properties);
+    _contrastDownButton->setStyleSheet(_btn_setting_properties);
+
+    _contrastLabel = new QLabel();
+    _contrastLabel->setText("Contrast: " + QString::number(CONTRASTValue));
+    _contrastLabel->setStyleSheet("color: white; font-size: 15px");
+
+    // Button connections
+    connect(_contrastUpButton, &QPushButton::clicked, this, [this]() {
+        CONTRASTValue += 0.02f;
+        if (CONTRASTValue > 2.0f) CONTRASTValue = 2.0f; // max clamp
+        _camera->setContrast(CONTRASTValue);
+        _contrastLabel->setText("Contrast: " + QString::number(CONTRASTValue));
     });
-}
-void Camera::setUpColorGain(){
-    _bGainSlider = new QSlider(Qt::Vertical);
-    _bGainSlider->setMinimum(0);
-    _bGainSlider->setMaximum(100);
-    _bGainSlider->setValue(50);
-    _bGainSlider->setFixedHeight(150);
-    _bGainSlider->setTickPosition(QSlider::TicksLeft);
-    _rGainSlider = new QSlider(Qt::Vertical);
-    _rGainSlider->setMinimum(0);
-    _rGainSlider->setMaximum(100);
-    _rGainSlider->setValue(50);
-    _rGainSlider->setFixedHeight(150);
-    _rGainSlider->setTickPosition(QSlider::TicksRight);
-    _rGainLabel =new QLabel();
-    _rGainLabel ->setText(QString("rGain: ")+QString::number(_rGainSlider->value()));
-    _bGainLabel =new QLabel();
-    _bGainLabel ->setText(QString("bGain: ")+QString::number(_bGainSlider->value()));
-    _settingBarLabel ->addWidget(_rGainLable);
-    _settingBarLabel ->addWidget(_bGainLable);
-    _settingBarSlider->addWidget(_bGainSlider);
-    _settingBarSlider->addWidget(_rGainSlider);
-    connect(_bGainSlider,&QSlider::valueChanged,this,[this](int value){
-        _camera ->setBlueGain(0.0f , value/ 100.0f);
-        _bGainLabel ->setText(QString("bGain: ")+QString::number(_bGainSlider->value()));
 
-
+    connect(_contrastDownButton, &QPushButton::clicked, this, [this]() {
+        CONTRASTValue -= 0.02f;
+        if (CONTRASTValue < -1.0f) CONTRASTValue = -1.0f; // min clamp
+        _camera->setContrast(CONTRASTValue);
+        _contrastLabel->setText("Contrast: " + QString::number(CONTRASTValue));
     });
-    connect(_rGainSlider,&QSlider::valueChanged,this,[this](int value){
-        _camera ->setRedGain( value/ 100.0f, 0.0f);
-        _rGainLabel ->setText(QString("rGain: ")+QString::number(_rGainSlider->value()));
 
-        
-    })
+    _contrastLayout->addWidget(_contrastUpButton);
+    _contrastLayout->addWidget(_contrastLabel);
+    _contrastLayout->addWidget(_contrastDownButton);
+
 }
+
+void Camera::setUpSaturationButtons() {
+    _saturationLayout = new QVBoxLayout(_saturationWidget);
+
+    _saturationUpButton = new QPushButton("Saturation Up");
+    _saturationDownButton = new QPushButton("Saturation Down");
+    _saturationUpButton->setStyleSheet(_btn_setting_properties);
+    _saturationDownButton->setStyleSheet(_btn_setting_properties);
+
+    _saturationLabel = new QLabel();
+    _saturationLabel->setText("Saturation: " + QString::number(SATURATIONValue));
+    _saturationLabel->setStyleSheet("color: white; font-size: 15px");
+
+    connect(_saturationUpButton, &QPushButton::clicked, this, [this]() {
+        SATURATIONValue += 0.02f;
+        if (SATURATIONValue > 2.5f) SATURATIONValue = 2.5f;
+        _camera->setSaturation(SATURATIONValue);
+        _saturationLabel->setText("Saturation: " + QString::number(SATURATIONValue));
+    });
+
+    connect(_saturationDownButton, &QPushButton::clicked, this, [this]() {
+        SATURATIONValue -= 0.02f;
+        if (SATURATIONValue < -1.0f) SATURATIONValue = -1.0f;
+        _camera->setSaturation(SATURATIONValue);
+        _saturationLabel->setText("Saturation: " + QString::number(SATURATIONValue));
+    });
+
+    _saturationLayout->addWidget(_saturationUpButton);
+    _saturationLayout->addWidget(_saturationLabel);
+    _saturationLayout->addWidget(_saturationDownButton);
+
+}
+

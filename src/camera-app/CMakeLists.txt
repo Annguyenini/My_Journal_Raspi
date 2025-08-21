@@ -33,6 +33,7 @@ set(PROJECT_SOURCES
         cameraworker.cpp
         camera.h
         cameraworker.h
+        camerasetting.cpp
 
 )
 include_directories(/usr/include/opencv4/opencv2) 

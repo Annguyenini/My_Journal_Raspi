@@ -4,7 +4,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-
+#include "configure.h"
 class Buttons :public QObject{
     Q_OBJECT
     private:
@@ -17,18 +17,7 @@ class Buttons :public QObject{
         QPushButton* _snapPictureBtn;
         QPushButton* _recordBtn;
         QPushButton* _photoSettingBtn;
-        QString _btn_properties = R"(QPushButton {
-                background-color: #000000;
-                color: white;
-                font-size: 20px;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 8px;
-            }
-            QPushButton:hover {
-                background-color: #005f99;
-        })";
-
+        
     public:
         Buttons(QVBoxLayout* mainlayout, QObject* parent);
         void setUpButtons();

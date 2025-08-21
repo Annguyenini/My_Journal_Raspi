@@ -20,40 +20,39 @@
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
+#include "configure.h"
 using Point = boost::geometry::model::point<double, 2, boost::geometry::cs::cartesian>;
 using Polygon = boost::geometry::model::polygon<Point>;
 class GPSWorker: public QObject{
     Q_OBJECT
 
     private:
-        std::filesystem::path _parentDir;
-        QSettings* _settings;
-        std::filesystem::path _databaseDir;
-        std::filesystem::path _dbPath;
-        std::filesystem::path _geoPolygonPath;
-        inline static std::filesystem::path _imagesDir = "";
-        inline static std::string _currentCity = "";
-        inline static std::string _currentRealnamecity = "";
-        QSerialPort* _serial = nullptr;
-        sqlite3* _db;
-        QString _buffer;
-        float _speed=0;
-        inline static float _lat = 21.357298;
-        inline static float _lng = 105.834322;
         struct _gpsMetadataStruct{
             std::string city;
             float lat;
             float lng;
         };
-        static std::unordered_map<std::string, _gpsMetadataStruct> _cache;
-        static std::mutex cacheMutex;
-        bool initPath();
+
         struct cityNames{
             std::string nameId;
             std::string realName;
-        };
+        };    
+
+        inline static std::string _currentCity = "";
+        inline static std::string _currentRealnamecity = "";
+        static std::unordered_map<std::string, _gpsMetadataStruct> _cache;
+        static std::mutex cacheMutex;
+        float _speed=0;
+        inline static float _lat = 21.357298;
+        inline static float _lng = 105.834322;
+        bool initPath();
         bool _isGeoLoaded = false;
         std::vector<std::pair<cityNames,Polygon>> _geoCache;
+        QSerialPort* _serial = nullptr;
+        sqlite3* _db;
+        QString _buffer;
+
+
         
     public:
         GPSWorker();
@@ -61,17 +60,16 @@ class GPSWorker: public QObject{
         void initialPort();
         void startReadingFromGps();
         void setUpDB();
-        std::string getCurrentTime();
-        std::string getCurrentCity(double lat, double lng);
-        // void speedMonitor();
-        
         void addingToCache(std::string time, const _gpsMetadataStruct & data);
         void startThread();
+        std::string getCurrentTime();
+        std::string getCurrentCity(double lat, double lng);        
+        
         Q_SIGNAL void coordinatesUpdate(const float& lat, const float& lng);
         Q_SIGNAL void cityChanged(std::string nameId, std::string realName);
         Q_SIGNAL void readyToShow();
         void loadGeoToCache();
-        std::filesystem::path getCityImageDir();
+        // std::filesystem::path getCityImageDir();
         std::string returnCurrentCity();
         std::pair<float,float> getCoordinates();
 };
@@ -86,7 +84,6 @@ class GPS: public QObject{
 
     public:
     explicit GPS(QVBoxLayout * layout, QObject *parent = nullptr);
-
     void setUpGps();
     ~GPS();
     GPSWorker* worker() const { return _worker; }

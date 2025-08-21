@@ -20,7 +20,14 @@ class CameraWorker : public QObject {
 public:
     explicit CameraWorker(QObject *parent = nullptr);
     void requestPicture(std::string filename);
-
+    void setBrightness (float value);
+    void setContrast (float value);
+    void setSaturation (float value);
+    void setISO(float value);
+    void setExposure(float value);
+    void setRedGain(float rGain);
+    void setBlueGain(float bGain);
+    void applySettings();
 
     ~CameraWorker();
 
@@ -51,12 +58,8 @@ private:
     unsigned int _frameWidthStill = 2560; // Default height
     unsigned int _frameHeightStill = 1440; // Default width for still capture
     unsigned int _fps = 30;
-    void setBrightness (float value){};
-    void setContrast (float value){};
-    void setSaturation (float value){};
-    void setISO(float value){};
-    void setExposure(float value){};
-    void setWhiteBalance(float rGain, float bGain){};    
+
+    // Camera settings    
     float BRIGHTNESS = 0.0f;
     float CONTRAST = 0.0f;
     float SATURATION = 0.0f;
@@ -64,6 +67,8 @@ private:
     float EXPOSURE = 10000;
     float R_GAIN = 1.0f;
     float B_GAIN = 1.0f;
+
+    
 };
 
 // class TCamera : public QObject {
