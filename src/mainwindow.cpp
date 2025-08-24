@@ -31,7 +31,6 @@ MainWindow::MainWindow(QWidget *parent)
     _mainlayout->setContentsMargins(0,0,0,0);
     _mainlayout->setSpacing(0);
     _central_widget->setLayout(_mainlayout);
-
     _stus = new StatusBar(_mainlayout,this);
     _stus -> SetUpStatusBar(); 
     _gps =new GPS(_mainlayout,this );
@@ -39,13 +38,12 @@ MainWindow::MainWindow(QWidget *parent)
     _map = new MAP(_mainlayout,this);
     _map->setUpMap();
     _map -> displayMap();
-
     _buttons = new Buttons(_mainlayout,this);
     _buttons ->setUpButtons();
-
     _album = new Album(_mainlayout,this);
-    
     _currentActFeaPtr =_map;
+
+
 
     MainWindow::setUpConnectionWithButtons();
 }
@@ -86,7 +84,10 @@ void MainWindow::setUpConnectionWithButtons(){
         });
     connect (_stus,&StatusBar::changeBackground, this,[this](){
         qDebug()<<"called";
-        // _map->switchBackground();
+        _map->switchBackground();
+    });
+    connect(_buttons,&Button::callTripMode,this,[this](){
+        _trip ->displayTripControl();
     });
 }
 

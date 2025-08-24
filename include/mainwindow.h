@@ -12,6 +12,7 @@
 #include <QLayout>  
 #include <QString> 
 #include <QWebEngineView>
+#include<QStackedLayout>
 #include <QUrl>
 #include <string>
 #include <any>
@@ -31,7 +32,8 @@ class MAP: public QObject{
     private:
         QVBoxLayout* _mainlayout;
         QWebEngineView* _maplabel;
-        QLayout* _mainLabel;
+        QWidget * _mainWidget;
+        QStackedLayout* _mainStack;
         QLabel* _mainBackgroundLabel;
         bool _isDisplay = false;
         bool _isMap =false;
@@ -55,12 +57,15 @@ class StatusBar: public QObject{
         QLabel* _clockLabel;
         QAction* _exitBtn;
         QAction* _mapBtn;
+
     public:
         explicit StatusBar(QVBoxLayout* mainlayoutn, QObject* parent =nullptr);
         ~StatusBar();
         void option_menu();
         void SetUpStatusBar();
         Q_SIGNAL void changeBackground();
+        void updateTime();
+
 
     }; 
 
@@ -93,6 +98,7 @@ private:
     StatusBar* _stus;
     QHBoxLayout _recordTimers;
     std::any _currentActFeaPtr;
+    
     // auto* _currentActFeaPtr ;
 };
 

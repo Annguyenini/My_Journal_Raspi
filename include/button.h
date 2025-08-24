@@ -10,7 +10,7 @@ class Buttons :public QObject{
     private:
         QVBoxLayout* _mainlayout;
         QHBoxLayout* _buttonsLayout;
-        QPushButton* _logBtn;
+        QPushButton* _tripBtn;
         QPushButton* _cameraBtn;
         QPushButton* _reloadBtn;
         QPushButton* _albumBtn;
@@ -25,7 +25,7 @@ class Buttons :public QObject{
         void showNormalButtons();
         Q_SIGNAL void callAlbum();
         Q_SIGNAL void callCamera();
-        Q_SIGNAL void callLog();
+        Q_SIGNAL void callTripMode();
         Q_SIGNAL void callReloadMap();
         Q_SIGNAL void callSnap();
         Q_SIGNAL void callRecord();

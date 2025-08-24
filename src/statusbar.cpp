@@ -6,7 +6,9 @@
 #include <QLabel>
 #include <QPoint>       // for QPoint stuff
 #include <QWidget>      // base widget stuff
-#include <QObject>  
+#include <QObject> 
+ #include <QTimer>      // <-- here it is
+#include <QDateTime>
 
 
 StatusBar::StatusBar(QVBoxLayout* mainlayout, QObject* parent): QObject(parent),_mainlayout(mainlayout)
@@ -55,9 +57,15 @@ void StatusBar::SetUpStatusBar(){
     _statusbar->addStretch(1);
     _statusbar->addWidget(_batteryPer);
     _mainlayout->insertLayout(0,_statusbar);
-
+     QTimer* timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &StatusBar::updateTime);
+    timer->start(1000);  // update every 1 second
     
 }
+void StatusBar:: updateTime() {
+        QString currentTime = QDateTime::currentDateTime().toString("hh:mm:ss");
+        _clockLabel->setText(currentTime);
+    }
 // void StatusBar::closeApplication(){
 //     if (QWidget* widgetParent = qobject_cast<QWidget*>(parent())) {
 //         widgetParent->close(); // this will close your main window safely

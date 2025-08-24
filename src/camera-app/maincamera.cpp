@@ -69,7 +69,27 @@ void Camera::setUpCamera(){
     
 }
 
+void Camera::showNotification(QWidget* parent, const QString& msg) {
+    // Create a floating label
+    QLabel* notif = new QLabel(msg, parent);
+    notif->setStyleSheet(
+        "background-color: #555;"  // semi-transparent yellow
+        "color: white;"
+        "border: 1px solid black;"
+        "padding: 5px;"
+        "border-radius: 5px;"
+    );
+    notif->setAlignment(Qt::AlignCenter);
+    notif->setWindowFlags(Qt::ToolTip); // floating above everything
+    notif->adjustSize();
 
+    // Position it somewhere relative to the parent
+    notif->move((parent->width() - notif->width()) / 2, 50); // top-center
+    notif->show();
+
+    // Auto-hide after 2 seconds
+    QTimer::singleShot(1000, notif, &QLabel::deleteLater);
+}
 void Camera::setUpButtons(){
     _buttonsLayout = new QHBoxLayout();
     _snapPictureBtn =new QPushButton("Snap");
@@ -161,6 +181,7 @@ bool Camera::takePicture() {
     std::string filename = _galleryPath.string()+"/"+this->getCurrentTime()+".jpg";
         qDebug()<<QString::fromStdString(filename);
         _camera->requestPicture(filename);
+        this-> showNotification(this,"Bang bang chiu chiu");
         this -> insertToDB(filename,"photo");
         return true;
 }
@@ -182,7 +203,9 @@ std::string Camera::getCurrentTime(){
 }
 
 void Camera::startRpiCamHello(const int& duration) {
+    this-> showNotification(this,QString::fromStdString("Recording for "+std::to_string(duration)+"s"));
     _camera->stopCamera();
+    
     Camera::hideTimer();
     std::string filename = _galleryPath.string()+"/"+this->getCurrentTime();
     std::string filenameH264 = filename+".h264";
@@ -215,6 +238,8 @@ void Camera::startRpiCamHello(const int& duration) {
 
     }
     this->hideTimer();
+    this-> showNotification(this,"Done Recording");
+
     this -> insertToDB(filenameMP4,"video");
     this -> insertToDB(thumbpath,"image");
     // Q_EMIT recordFinished();

@@ -35,7 +35,7 @@ void AlbumWorker::initDB(){
 
 }
 void AlbumWorker::insertToDB(const std::string& path,std::string type){
-    std::string time = _gpsObject.getCurrentTime();
+    std::string time = getCurrentTime();
     
     const char* insertToDB = "INSERT INTO Album (path,time,type) VALUES (?,?,?)";
     sqlite3_stmt *stmt;

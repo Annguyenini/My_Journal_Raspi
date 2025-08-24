@@ -201,15 +201,15 @@ void Camera::setUpSaturationButtons() {
     _saturationLabel->setStyleSheet("color: white; font-size: 15px");
 
     connect(_saturationUpButton, &QPushButton::clicked, this, [this]() {
-        SATURATIONValue += 0.02f;
-        if (SATURATIONValue > 2.5f) SATURATIONValue = 2.5f;
+        SATURATIONValue += 0.05f;
+        if (SATURATIONValue > 2.5f) SATURATIONValue = 4.0f;
         _camera->setSaturation(SATURATIONValue);
         _saturationLabel->setText("Saturation: " + QString::number(SATURATIONValue));
     });
 
     connect(_saturationDownButton, &QPushButton::clicked, this, [this]() {
-        SATURATIONValue -= 0.02f;
-        if (SATURATIONValue < -1.0f) SATURATIONValue = -1.0f;
+        SATURATIONValue -= 0.05f;
+        if (SATURATIONValue < -1.0f) SATURATIONValue = -2.0f;
         _camera->setSaturation(SATURATIONValue);
         _saturationLabel->setText("Saturation: " + QString::number(SATURATIONValue));
     });

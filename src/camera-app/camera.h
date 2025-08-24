@@ -43,6 +43,7 @@ public:
     void insertToDB(const std::string& path,std::string type);
     void initDB();
     void displayCameraSettingbar();
+    void showNotification(QWidget* parent, const QString& msg);
 
 
 
@@ -92,7 +93,6 @@ private:
     void setUpBrightnessButtons();
     void setUpContrastButtons();
     void setUpSaturationButtons();
-    
 
     bool isCameraSettingDisplay = false;    
 

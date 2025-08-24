@@ -106,15 +106,21 @@ void Album::loadToGrid(){
             label->setProperty("type","video");
             QPixmap overlay = QPixmap(QString::fromStdString(_playIconPath.string()));
             qDebug()<<QString::fromStdString(_playIconPath.string());
-            QPixmap result (pixmap.width(),pixmap.height());
+            QPixmap result(pixmap.size());
             result.fill(Qt::transparent);
-            {
-                QPainter painter (&result);
-                painter.drawPixmap(0,0,pixmap);
-                painter.drawPixmap(0,0,overlay);
-            }
+
+            QPainter painter(&result);
+            painter.drawPixmap(0, 0, pixmap);
+
+            // Ensure overlay has the same size or scale it
+            QPixmap scaledOverlay = overlay.scaled(pixmap.size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+            painter.drawPixmap(0, 0, scaledOverlay);
+
+            painter.end();
+
             label->setPixmap(result);
-            label->setFixedSize(label->pixmap().size());
+            label->setFixedSize(result.size());
+            label->update(); 
         }
         else{
             label->setProperty("filepath", filename);

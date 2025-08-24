@@ -4,7 +4,7 @@
 #include <QPushButton>
 #include "button.h"
 Buttons::Buttons(QVBoxLayout* mainlayout, QObject* parent) :_mainlayout(mainlayout), QObject(parent)
-,_buttonsLayout(nullptr),_logBtn(nullptr),_cameraBtn(nullptr),_reloadBtn(nullptr),_albumBtn(nullptr)
+,_buttonsLayout(nullptr),_tripBtn(nullptr),_cameraBtn(nullptr),_reloadBtn(nullptr),_albumBtn(nullptr)
 {
 }
 
@@ -12,7 +12,7 @@ Buttons::Buttons(QVBoxLayout* mainlayout, QObject* parent) :_mainlayout(mainlayo
 void Buttons::setUpButtons(){
     _buttonsLayout =new QHBoxLayout();
     _albumBtn =new QPushButton("Album");
-    _logBtn =new QPushButton("Log");
+    _tripBtn =new QPushButton("Trip Mode");
     _cameraBtn =new QPushButton("Camera");
     _reloadBtn =new QPushButton("Reload");
     _snapPictureBtn =new QPushButton("Snap");
@@ -20,10 +20,10 @@ void Buttons::setUpButtons(){
     _photoSettingBtn = new QPushButton("Photo Settings");
     _albumBtn->setObjectName("Album-Button");
 
-    _logBtn->setObjectName("Log-Button");
+    _tripBtn->setObjectName("Log-Button");
     _cameraBtn->setObjectName("Camera-Button");
     _reloadBtn->setObjectName("Reload-Button");
-    for (QPushButton* btn :{_albumBtn, _logBtn, _reloadBtn, _snapPictureBtn,_recordBtn,_photoSettingBtn, _cameraBtn}){
+    for (QPushButton* btn :{_albumBtn, _tripBtn, _reloadBtn, _snapPictureBtn,_recordBtn,_photoSettingBtn, _cameraBtn}){
         btn->setStyleSheet(_btn_properties);
         _buttonsLayout->addWidget(btn);
         
@@ -34,8 +34,8 @@ void Buttons::setUpButtons(){
     connect (_cameraBtn,&QPushButton::clicked, this, [this](){
         Q_EMIT callCamera();
     });
-    connect (_logBtn,&QPushButton::clicked,this, [this](){
-        Q_EMIT callLog();
+    connect (_tripBtn,&QPushButton::clicked,this, [this](){
+        Q_EMIT callTripMode();
 
     });
     connect (_reloadBtn,&QPushButton::clicked,this, [this](){
@@ -59,13 +59,13 @@ void Buttons::showNormalButtons(){
     _snapPictureBtn->hide();
     _recordBtn->hide();
     _photoSettingBtn->hide();
-    _logBtn->show();
+    _tripBtn->show();
     _reloadBtn->show();
     _albumBtn->show();
 }
 void Buttons::cameraButtons(){
     _albumBtn->hide();
-    _logBtn->hide();
+    _tripBtn->hide();
     _reloadBtn->hide();
     _snapPictureBtn->show();
     _recordBtn->show();

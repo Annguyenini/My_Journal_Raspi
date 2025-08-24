@@ -62,7 +62,7 @@ class GPSWorker: public QObject{
         void setUpDB();
         void addingToCache(std::string time, const _gpsMetadataStruct & data);
         void startThread();
-        std::string getCurrentTime();
+        // std::string getCurrentTime();
         std::string getCurrentCity(double lat, double lng);        
         
         Q_SIGNAL void coordinatesUpdate(const float& lat, const float& lng);
